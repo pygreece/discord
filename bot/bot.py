@@ -4,6 +4,7 @@ import discord
 from discord.ext.commands import Bot
 
 from bot import config
+from bot.db import db_session
 from bot.exceptions import WrongGuildException, WrongUserException
 from bot.models import Member
 
@@ -24,18 +25,30 @@ to have you back! 😊
 
 
 class PyGreeceBot(Bot):
+    """The main bot class for the PyGreece Discord bot.
+
+    This class implements functionality for handling member join events,
+    sending welcome messages, and assigning roles based on reactions.
+    """
+
     async def on_ready(self) -> None:
+        """Called when the bot is ready and has logged in."""
         assert self.user is not None
         logger.info(f"Logged in as {self.user} (ID: {self.user.id})")
 
     async def _send_welcome_message(
         self, member: discord.Member, db_member: Member, content: str
     ) -> None:
+        """Sends a welcome message to the member via DM."""
+
         try:
             await member.send(content)
             logger.info(f"Sent welcome message to {member.name} ({member.id})")
-            db_member.dm_sent = True
-            await db_member.save()
+
+            async with db_session() as session:
+                db_member.dm_sent = True
+                session.add(db_member)
+
             logger.info(f"Updated dm_sent=True for {member.name} ({member.id}) in database.")
         except discord.Forbidden:
             logger.warning(
@@ -45,7 +58,13 @@ class PyGreeceBot(Bot):
             logger.error(f"Error sending DM to {member.name}: {e}")
 
     async def on_member_join(self, member: discord.Member) -> None:
-        db_member, created_now = await Member.get_or_create(id=member.id)
+        """Called when a member joins the server."""
+
+        async with db_session() as session:
+            # Get or create the member in database
+            db_member, created_now = await Member.get_or_create(member.id, session=session)
+
+        # Prepare welcome message
         if not created_now:
             logger.info(f"Member {member.name} ({member.id}) has already joined the guild before.")
             message_content = ALREADY_EXISTS_MESSAGE.format(
@@ -60,6 +79,8 @@ class PyGreeceBot(Bot):
     async def _assign_role(
         self, member: discord.Member, guild: discord.Guild, role_name: str
     ) -> None:
+        """Assigns a role to the member if they don't already have it."""
+
         # Assign the "members" role
         role = discord.utils.get(guild.roles, name=role_name)
         if role:
@@ -74,6 +95,8 @@ class PyGreeceBot(Bot):
     async def _get_guild_and_user(
         self, payload: discord.RawReactionActionEvent
     ) -> tuple[discord.Guild, discord.Member]:
+        """Retrieves the guild and user from the payload of a reaction event."""
+
         if payload.guild_id is None:
             msg = f"Invalid {payload.guild_id=} in reaction event"
             logger.error(msg)
@@ -103,6 +126,7 @@ class PyGreeceBot(Bot):
 
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
         """Grants the 'members' role and updates the database when a user reacts to the Code of Conduct message."""
+
         if payload.message_id != config.COC_MESSAGE_ID:
             return
 
@@ -113,7 +137,8 @@ class PyGreeceBot(Bot):
 
         await self._assign_role(member, guild, config.MEMBER_ROLE_NAME)
 
-        db_member, _ = await Member.get_or_create(id=member.id)
-        db_member.reacted = True
-        await db_member.save()
+        async with db_session() as session:
+            db_member, _ = await Member.get_or_create(id=member.id, session=session)
+            db_member.reacted = True
+            session.add(db_member)
         logger.info(f"Updated reacted=True for {member.name} ({member.id}) in database.")
