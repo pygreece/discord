@@ -18,8 +18,13 @@ email = "organizers@pygreece.org"
 
 [dependency-groups]
 dev = [
+    "aiosqlite>=0.21.0",
     "mypy>=1.15.0",
     "pre-commit>=4.1.0",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+    "pytest-cov>=6.0.0",
+    "pytest-dotenv>=0.5.2",
     "ruff>=0.11.0",
 ]
 
@@ -31,5 +36,20 @@ select = ["E4", "E7", "E9", "F", "I"]
 
 [tool.mypy]
 python_version = "3.12"
-files = ["bot"]
+files = ["bot", "tests"]
 strict = true
+
+[[tool.mypy.overrides]]
+module = 'tests.*'
+disable_error_code = ["method-assign"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+asyncio_default_test_loop_scope = "function"
+env_override_existing_values = 1
+env_files = [".env.test"]
+
+[tool.coverage.run]
+branch = true
+source = ["bot", "tests"]
