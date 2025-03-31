@@ -3,8 +3,7 @@ import logging
 import discord
 from discord.ext.commands import Bot
 
-from bot import config
-from bot.db import db_session
+from bot import config, db
 from bot.exceptions import WrongGuildException, WrongUserException
 from bot.models import Member
 
@@ -45,7 +44,7 @@ class PyGreeceBot(Bot):
             await member.send(content)
             logger.info(f"Sent welcome message to {member.name} ({member.id})")
 
-            async with db_session() as session:
+            async with db.get_session() as session:
                 db_member.dm_sent = True
                 session.add(db_member)
 
@@ -60,7 +59,7 @@ class PyGreeceBot(Bot):
     async def on_member_join(self, member: discord.Member) -> None:
         """Called when a member joins the server."""
 
-        async with db_session() as session:
+        async with db.get_session() as session:
             # Get or create the member in database
             db_member, created_now = await Member.get_or_create(member.id, session=session)
 
@@ -137,7 +136,7 @@ class PyGreeceBot(Bot):
 
         await self._assign_role(member, guild, config.MEMBER_ROLE_NAME)
 
-        async with db_session() as session:
+        async with db.get_session() as session:
             db_member, _ = await Member.get_or_create(id=member.id, session=session)
             db_member.reacted = True
             session.add(db_member)

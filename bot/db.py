@@ -17,7 +17,7 @@ async_session_factory = async_sessionmaker(engine, class_=AsyncSession, expire_o
 
 
 @asynccontextmanager
-async def db_session() -> AsyncGenerator[AsyncSession, None]:
+async def get_session() -> AsyncGenerator[AsyncSession, None]:
     """Get a database session as a context manager.
 
     This function provides a context manager for database sessions.
