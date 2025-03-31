@@ -31,7 +31,7 @@ class PyGreeceBot(Bot):
     sending welcome messages, and assigning roles based on reactions.
     """
 
-    @Bot.user.setter
+    @Bot.user.setter  # type: ignore
     def _user(self, value: Any) -> None:
         """Set the user attribute. Only used in tests for mocking the user"""
         self._connection.user = value

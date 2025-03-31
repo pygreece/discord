@@ -1,17 +1,23 @@
 from contextlib import asynccontextmanager
+from typing import AsyncGenerator
 from unittest.mock import AsyncMock, MagicMock
 
 import discord
 import pytest
 import pytest_asyncio
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 
 from bot import config
 from bot.models import Base
 
 
 @pytest_asyncio.fixture(loop_scope="session", scope="session")
-async def test_engine():
+async def test_engine() -> AsyncGenerator[AsyncEngine, None]:
     """Create a test engine for the test session."""
     engine = create_async_engine(config.DATABASE_URL)
     async with engine.begin() as conn:
@@ -26,7 +32,7 @@ async def test_engine():
 
 
 @pytest.fixture
-async def test_session(test_engine):
+async def test_session(test_engine: AsyncEngine) -> AsyncGenerator[AsyncSession, None]:
     """Create a test session for each test."""
     connection = await test_engine.connect()
     transaction = await connection.begin()
@@ -44,11 +50,11 @@ async def test_session(test_engine):
 
 
 @pytest.fixture
-def mock_session(test_session, monkeypatch):
+def mock_session(test_session: AsyncSession, monkeypatch: pytest.MonkeyPatch) -> AsyncSession:
     """Mock the db_session context manager to return the test session."""
 
     @asynccontextmanager
-    async def mock_get_session():
+    async def mock_get_session() -> AsyncGenerator[AsyncSession, None]:
         yield test_session
 
     # Patch the db_session function
@@ -58,7 +64,7 @@ def mock_session(test_session, monkeypatch):
 
 
 @pytest.fixture
-def mock_discord_user():
+def mock_discord_user() -> MagicMock:
     """Create a mock Discord user."""
     user = MagicMock(spec=discord.User)
     user.id = 123456789
@@ -68,7 +74,7 @@ def mock_discord_user():
 
 
 @pytest.fixture
-def mock_discord_role():
+def mock_discord_role() -> MagicMock:
     """Create a mock Discord role."""
     role = MagicMock(spec=discord.Role)
     role.name = "members"
@@ -77,7 +83,7 @@ def mock_discord_role():
 
 
 @pytest.fixture
-def mock_discord_guild(mock_discord_role):
+def mock_discord_guild(mock_discord_role: MagicMock) -> MagicMock:
     """Create a mock Discord guild."""
     guild = MagicMock(spec=discord.Guild)
     guild.name = config.DISCORD_GUILD
@@ -87,7 +93,7 @@ def mock_discord_guild(mock_discord_role):
 
 
 @pytest.fixture
-def mock_discord_member(mock_discord_user, mock_discord_guild):
+def mock_discord_member(mock_discord_user: MagicMock, mock_discord_guild: MagicMock) -> MagicMock:
     """Create a mock Discord member."""
     member = MagicMock(spec=discord.Member)
     member.id = mock_discord_user.id
@@ -101,7 +107,9 @@ def mock_discord_member(mock_discord_user, mock_discord_guild):
 
 
 @pytest.fixture
-def mock_reaction_payload(mock_discord_user, mock_discord_guild):
+def mock_reaction_payload(
+    mock_discord_user: MagicMock, mock_discord_guild: MagicMock
+) -> MagicMock:
     """Create a mock reaction payload."""
     payload = MagicMock(spec=discord.RawReactionActionEvent)
     payload.user_id = mock_discord_user.id

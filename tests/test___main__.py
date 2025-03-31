@@ -1,10 +1,11 @@
+from typing import Generator
 from unittest.mock import MagicMock, patch
 
 import pytest
 
 
 @pytest.fixture
-def mock_intents():
+def mock_intents() -> Generator[tuple[MagicMock, MagicMock], None, None]:
     """Create a mock for discord.Intents.default()"""
     with patch("discord.Intents.default") as mock_intents_default:
         mock_intents = MagicMock()
@@ -13,7 +14,7 @@ def mock_intents():
 
 
 @pytest.fixture
-def mock_bot():
+def mock_bot() -> Generator[tuple[MagicMock, MagicMock], None, None]:
     """Create a mock for the PyGreeceBot class"""
     with patch("bot.bot.PyGreeceBot") as mock_bot_class:
         mock_bot_instance = MagicMock()
@@ -23,7 +24,11 @@ def mock_bot():
 
 @patch("discord.utils.setup_logging")
 @patch("bot.config.DISCORD_TOKEN", "mock_token")
-def test_bot_initialization(mock_setup_logging, mock_bot, mock_intents):
+def test_bot_initialization(
+    mock_setup_logging: MagicMock,
+    mock_bot: tuple[MagicMock, MagicMock],
+    mock_intents: tuple[MagicMock, MagicMock],
+) -> None:
     """Test that the bot is initialized with the correct parameters"""
     mock_bot_instance, mock_bot_class = mock_bot
     mock_intents_instance, mock_intents_default = mock_intents

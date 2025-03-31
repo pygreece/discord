@@ -1,3 +1,4 @@
+from typing import Generator
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -6,7 +7,7 @@ from bot import db
 
 
 @pytest.fixture
-def mock_session():
+def mock_session() -> AsyncMock:
     """Create a mock for the SQLAlchemy AsyncSession"""
     session = AsyncMock()
     session.commit = AsyncMock()
@@ -16,14 +17,14 @@ def mock_session():
 
 
 @pytest.fixture(autouse=True)
-def mock_session_factory(mock_session):
+def mock_session_factory(mock_session: AsyncMock) -> Generator[None, None, None]:
     """Create a mock for the async_session_factory that returns our mock session"""
     with patch("bot.db.async_session_factory", return_value=mock_session):
         yield
 
 
 @pytest.mark.asyncio
-async def test_get_session_successful_operation(mock_session):
+async def test_get_session_successful_operation(mock_session: AsyncMock) -> None:
     """Test that get_session successfully yields a session and commits on normal operation"""
     async with db.get_session() as session:
         assert session is mock_session
@@ -35,7 +36,7 @@ async def test_get_session_successful_operation(mock_session):
 
 
 @pytest.mark.asyncio
-async def test_get_session_with_exception(mock_session):
+async def test_get_session_with_exception(mock_session: AsyncMock) -> None:
     """Test that get_session rolls back the transaction when an exception occurs"""
     with patch("bot.db.logger") as mock_logger:
         with pytest.raises(ValueError):

@@ -1,7 +1,9 @@
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from bot.models import Member
 
 
-async def test_member_get_by_id(test_session):
+async def test_member_get_by_id(test_session: AsyncSession) -> None:
     """Test getting a member by ID."""
     # Create a test member
     member = Member(id=123)
@@ -20,7 +22,7 @@ async def test_member_get_by_id(test_session):
     assert result is None
 
 
-async def test_member_get_or_create(test_session):
+async def test_member_get_or_create(test_session: AsyncSession) -> None:
     """Test getting or creating a member."""
     # Test creating a new member
     member, created = await Member.get_or_create(456, session=test_session)
