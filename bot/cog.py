@@ -1,8 +1,7 @@
 import logging
-from typing import Any
 
 import discord
-from discord.ext.commands import Bot
+from discord.ext import commands
 
 from bot import config, db
 from bot.exceptions import WrongGuildException, WrongUserException
@@ -24,22 +23,18 @@ to have you back! 😊
 """
 
 
-class PyGreeceBot(Bot):
-    """The main bot class for the PyGreece Discord bot.
+class WelcomeAndCoC(commands.Cog):
+    """The cog that implement CoC acceptance for the PyGreece Discord bot.
 
     This class implements functionality for handling member join events,
-    sending welcome messages, and assigning roles based on reactions.
+    sending welcome messages, and assigning roles based on reactions to the
+    PyGreece CoC.
     """
 
-    @Bot.user.setter  # type: ignore
-    def _user(self, value: Any) -> None:
-        """Set the user attribute. Only used in tests for mocking the user"""
-        self._connection.user = value
-
+    @commands.Cog.listener()
     async def on_ready(self) -> None:
-        """Called when the bot is ready and has logged in."""
-        assert self.user is not None
-        logger.info(f"Logged in as {self.user} (ID: {self.user.id})")
+        """Called when the bot is ready."""
+        logger.info("PyGreece bot is now logged in")
 
     async def _send_welcome_message(
         self, member: discord.Member, db_member: Member, content: str
@@ -62,6 +57,7 @@ class PyGreeceBot(Bot):
         except Exception as e:
             logger.error(f"Error sending DM to {member.name}: {e}")
 
+    @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member) -> None:
         """Called when a member joins the server."""
 
@@ -129,6 +125,7 @@ class PyGreeceBot(Bot):
 
         return guild, user
 
+    @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
         """Grants the 'members' role and updates the database when a user reacts to the Code of Conduct message."""
 

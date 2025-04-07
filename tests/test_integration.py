@@ -1,10 +1,9 @@
 from unittest.mock import MagicMock
 
-import discord
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from bot.bot import PyGreeceBot
+from bot.cog import WelcomeAndCoC
 from bot.models import Member
 
 
@@ -16,7 +15,7 @@ async def test_full_member_flow(
     mock_session: AsyncSession,
 ) -> None:
     """Test the full flow of a member joining and reacting to the CoC."""
-    bot = PyGreeceBot(command_prefix="!", intents=discord.Intents.default())
+    bot = WelcomeAndCoC()
 
     # Set up the mocks
     bot.get_guild = MagicMock(return_value=mock_discord_guild)
