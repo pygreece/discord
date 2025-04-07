@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 
 import discord
 from discord.ext.commands import Bot
@@ -29,6 +30,11 @@ class PyGreeceBot(Bot):
     This class implements functionality for handling member join events,
     sending welcome messages, and assigning roles based on reactions.
     """
+
+    @Bot.user.setter  # type: ignore
+    def _user(self, value: Any) -> None:
+        """Set the user attribute. Only used in tests for mocking the user"""
+        self._connection.user = value
 
     async def on_ready(self) -> None:
         """Called when the bot is ready and has logged in."""
