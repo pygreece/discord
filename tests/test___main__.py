@@ -25,7 +25,7 @@ def mock_bot() -> Generator[tuple[MagicMock, MagicMock], None, None]:
 
 
 @pytest.fixture
-def mock_cog() -> Generator[MagicMock, None, None]:
+def mock_cog() -> Generator[tuple[MagicMock, MagicMock], None, None]:
     """Create a mock for the WelcomeAndCoC cog"""
     with patch("bot.cog.WelcomeAndCoC") as mock_cog_class:
         mock_cog_instance = MagicMock()

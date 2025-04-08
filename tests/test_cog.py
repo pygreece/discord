@@ -3,6 +3,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import discord
 import pytest
+from discord.ext import commands
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,7 +15,8 @@ from bot.models import Member
 
 async def test_on_ready() -> None:
     """Test the on_ready event."""
-    cog = WelcomeAndCoC()
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
 
     with patch("bot.cog.logger") as mock_logger:
         await cog.on_ready()
@@ -25,7 +27,8 @@ async def test_send_welcome_message(
     mock_discord_member: MagicMock, mock_session: AsyncSession
 ) -> None:
     """Test sending welcome message to a member."""
-    cog = WelcomeAndCoC()
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
 
     db_member = Member(id=mock_discord_member.id)
     mock_session.add(db_member)
@@ -47,7 +50,8 @@ async def test_send_welcome_message_discord_failure(
     mock_discord_member: MagicMock, mock_session: AsyncSession
 ) -> None:
     """Test handling of errors when sending welcome message."""
-    cog = WelcomeAndCoC()
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
 
     db_member = Member(id=mock_discord_member.id)
     mock_session.add(db_member)
@@ -74,7 +78,8 @@ async def test_send_welcome_message_discord_failure(
 async def test_send_welcome_message_random_failure(
     mock_discord_member: MagicMock, mock_session: AsyncSession
 ) -> None:
-    cog = WelcomeAndCoC()
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
 
     db_member = Member(id=mock_discord_member.id)
     mock_session.add(db_member)
@@ -100,7 +105,8 @@ async def test_on_member_join_new_member(
     mock_discord_member: MagicMock, mock_session: AsyncSession
 ) -> None:
     """Test handling a new member joining."""
-    cog = WelcomeAndCoC()
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
 
     cog._send_welcome_message = AsyncMock()
 
@@ -121,7 +127,8 @@ async def test_on_member_join_existing_member(
     mock_discord_member: MagicMock, mock_session: AsyncSession
 ) -> None:
     """Test handling a new member joining."""
-    cog = WelcomeAndCoC()
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
     cog._send_welcome_message = AsyncMock()
 
     # Simulate existing member in DB
@@ -139,7 +146,8 @@ async def test_assign_role(
     mock_discord_member: MagicMock, mock_discord_role: MagicMock, mock_discord_guild: MagicMock
 ) -> None:
     """Test assigning a role to a member."""
-    cog = WelcomeAndCoC()
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
 
     await cog._assign_role(mock_discord_member, mock_discord_guild, MEMBER_ROLE_NAME)
 
@@ -151,7 +159,8 @@ async def test_assign_role_already_has_role(
     mock_discord_member: MagicMock, mock_discord_role: MagicMock, mock_discord_guild: MagicMock
 ) -> None:
     """Test assigning a role to a member who already has it."""
-    cog = WelcomeAndCoC()
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
 
     mock_discord_member.roles = [mock_discord_role]
 
@@ -165,7 +174,8 @@ async def test_assign_role_missing_role(
     mock_discord_member: MagicMock, mock_discord_guild: MagicMock
 ) -> None:
     """Test assigning a non-existent role."""
-    cog = WelcomeAndCoC()
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
 
     mock_discord_guild.roles = []
 
@@ -183,8 +193,9 @@ async def test_get_guild_and_user(
     mock_reaction_payload: MagicMock, mock_discord_guild: MagicMock, mock_discord_member: MagicMock
 ) -> None:
     """Test getting guild and user from reaction payload."""
-    cog = WelcomeAndCoC()
-    cog.get_guild = MagicMock(return_value=mock_discord_guild)
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
+    bot.get_guild = MagicMock(return_value=mock_discord_guild)
 
     mock_discord_guild.get_member = MagicMock(return_value=mock_discord_member)
 
@@ -196,7 +207,8 @@ async def test_get_guild_and_user(
 
 async def test_get_guild_and_user_no_guild(mock_reaction_payload: MagicMock) -> None:
     """Test handling None guild."""
-    cog = WelcomeAndCoC()
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
     mock_reaction_payload.guild_id = None
 
     with pytest.raises(WrongGuildException):
@@ -205,8 +217,9 @@ async def test_get_guild_and_user_no_guild(mock_reaction_payload: MagicMock) -> 
 
 async def test_get_guild_and_user_get_guild_none(mock_reaction_payload: MagicMock) -> None:
     """Test handling None guild."""
-    cog = WelcomeAndCoC()
-    cog.get_guild = MagicMock(return_value=None)
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
+    bot.get_guild = MagicMock(return_value=None)
 
     with pytest.raises(WrongGuildException):
         await cog._get_guild_and_user(mock_reaction_payload)
@@ -216,9 +229,10 @@ async def test_get_guild_and_user_wrong_guild(
     mock_reaction_payload: MagicMock, mock_discord_guild: MagicMock
 ) -> None:
     """Test handling wrong guild."""
-    cog = WelcomeAndCoC()
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
     mock_discord_guild.name = "Random wrong name"
-    cog.get_guild = MagicMock(return_value=mock_discord_guild)
+    bot.get_guild = MagicMock(return_value=mock_discord_guild)
 
     with pytest.raises(WrongGuildException):
         await cog._get_guild_and_user(mock_reaction_payload)
@@ -228,8 +242,9 @@ async def test_get_guild_and_user_no_user(
     mock_reaction_payload: MagicMock, mock_discord_guild: MagicMock
 ) -> None:
     """Test handling None user."""
-    cog = WelcomeAndCoC()
-    cog.get_guild = MagicMock(return_value=mock_discord_guild)
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
+    bot.get_guild = MagicMock(return_value=mock_discord_guild)
 
     # Mock the guild's get_member method to return None
     mock_discord_guild.get_member = MagicMock(return_value=None)
@@ -242,8 +257,9 @@ async def test_get_guild_and_user_bot_user(
     mock_reaction_payload: MagicMock, mock_discord_guild: MagicMock, mock_discord_member: MagicMock
 ) -> None:
     """Test handling bot user."""
-    cog = WelcomeAndCoC()
-    cog.get_guild = MagicMock(return_value=mock_discord_guild)
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
+    bot.get_guild = MagicMock(return_value=mock_discord_guild)
 
     # Set up the mock member as a bot
     mock_discord_member.bot = True
@@ -260,7 +276,8 @@ async def test_on_raw_reaction_add(
     mock_discord_member: MagicMock,
 ) -> None:
     """Test handling a reaction to the Code of Conduct message."""
-    cog = WelcomeAndCoC()
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
 
     cog._get_guild_and_user = AsyncMock(return_value=(mock_discord_guild, mock_discord_member))
     cog._assign_role = AsyncMock()
@@ -281,7 +298,8 @@ async def test_on_raw_reaction_add(
 
 async def test_on_raw_reaction_add_wrong_message(mock_reaction_payload: MagicMock) -> None:
     """Test handling a reaction to a different message."""
-    cog = WelcomeAndCoC()
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
 
     mock_reaction_payload.message_id = 999999
 
@@ -297,7 +315,8 @@ async def test_on_raw_reaction_add_wrong_message(mock_reaction_payload: MagicMoc
 
 async def test_on_raw_reaction_add_guild_user_error(mock_reaction_payload: MagicMock) -> None:
     """Test handling errors in getting guild and user."""
-    cog = WelcomeAndCoC()
+    bot = commands.Bot(command_prefix="!", intents=discord.Intents.default())
+    cog = WelcomeAndCoC(bot)
 
     # Mock _get_guild_and_user to raise an exception
     cog._get_guild_and_user = AsyncMock(side_effect=WrongGuildException("Test error"))

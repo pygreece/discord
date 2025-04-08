@@ -31,6 +31,10 @@ class WelcomeAndCoC(commands.Cog):
     PyGreece CoC.
     """
 
+    def __init__(self, bot: commands.Bot) -> None:
+        """Initialize the cog with the bot instance."""
+        self.bot = bot
+
     @commands.Cog.listener()
     async def on_ready(self) -> None:
         """Called when the bot is ready."""
@@ -103,7 +107,7 @@ class WelcomeAndCoC(commands.Cog):
             logger.error(msg)
             raise WrongGuildException(msg)
 
-        guild = self.get_guild(payload.guild_id)
+        guild = self.bot.get_guild(payload.guild_id)
         if guild is None:
             msg = "Guild not found. Possibly an issue with intents."
             logger.warning(msg)
