@@ -58,7 +58,7 @@ async def test_bot_initialization(
     # Verify bot was initialized correctly
     mock_bot_class.assert_called_once()
     _, kwargs = mock_bot_class.call_args
-    assert kwargs["command_prefix"] == "/"
+    assert kwargs["command_prefix"] == "!"
     assert kwargs["intents"] == mock_intents_instance
 
     # Verify the cog was initialized with the bot instance

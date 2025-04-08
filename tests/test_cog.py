@@ -1,3 +1,4 @@
+import datetime
 from unittest import mock
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -326,3 +327,85 @@ async def test_on_raw_reaction_add_guild_user_error(mock_reaction_payload: Magic
 
     # Check _assign_role was NOT called
     cog._assign_role.assert_not_called()
+
+
+async def test_sync_command(mock_cog: WelcomeAndCoC, mock_context: MagicMock) -> None:
+    """Test the sync command."""
+    mock_cog.bot.tree.copy_global_to = MagicMock()
+    mock_cog.bot.tree.sync = AsyncMock()
+
+    await mock_cog.sync.callback(mock_cog, mock_context)  # type: ignore
+
+    mock_cog.bot.tree.copy_global_to.assert_called_once_with(
+        guild=discord.Object(mock_context.guild.id)
+    )
+    mock_cog.bot.tree.sync.assert_called_once_with(guild=discord.Object(mock_context.guild.id))
+    mock_context.reply.assert_called_once_with("Command tree synced.")
+
+
+async def test_health_command_success(
+    mock_cog: WelcomeAndCoC, mock_context: MagicMock, mock_session: AsyncSession
+) -> None:
+    """Test the health command with a successful database connection."""
+    mock_cog.start_time = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
+        days=2, hours=5, minutes=30
+    )
+
+    mock_session.execute = AsyncMock()
+
+    await mock_cog.health.callback(mock_cog, mock_context)  # type: ignore
+
+    mock_context.send.assert_called_once()
+
+    call_args = mock_context.send.call_args
+    embed = call_args[1]["embed"]
+
+    # Verify the embed has the expected fields
+    assert isinstance(embed, discord.Embed)
+    assert embed.title == "Bot Health Status"
+
+    # Check Discord connection field
+    discord_field = next((f for f in embed.fields if f.name == "Discord Connection"), None)
+    assert discord_field is not None
+    assert discord_field.value is not None
+    assert "Latency: 50ms" in discord_field.value
+
+    # Check Database connection field
+    db_field = next((f for f in embed.fields if f.name == "Database Connection"), None)
+    assert db_field is not None
+    assert db_field.value is not None
+    assert "✅ Connected" in db_field.value
+
+    # Check Uptime field
+    uptime_field = next((f for f in embed.fields if f.name == "Uptime"), None)
+    assert uptime_field is not None
+    assert uptime_field.value is not None
+    assert "2d 5h 30m" in uptime_field.value
+
+
+async def test_health_command_db_error(
+    mock_cog: WelcomeAndCoC, mock_context: MagicMock, mock_session: AsyncSession
+) -> None:
+    """Test the health command with a database connection error."""
+    mock_session.execute = AsyncMock(side_effect=Exception("Database connection error"))
+
+    await mock_cog.health.callback(mock_cog, mock_context)  # type: ignore
+
+    mock_context.send.assert_called_once()
+
+    call_args = mock_context.send.call_args
+    embed = call_args[1]["embed"]
+
+    # Check Database connection field shows error
+    db_field = next((f for f in embed.fields if f.name == "Database Connection"), None)
+    assert db_field is not None
+    assert "❌ Error" in db_field.value
+    assert "Database connection error" in db_field.value
+
+
+async def test_health_command_permission(mock_cog: WelcomeAndCoC) -> None:
+    """Test that the health command requires the correct permissions."""
+    checks = mock_cog.health.checks
+    assert len(checks) > 0
+    has_role_check = next((c for c in checks if "has_role" in str(c)), None)
+    assert has_role_check is not None

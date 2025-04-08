@@ -5,6 +5,7 @@ from unittest.mock import AsyncMock, MagicMock
 import discord
 import pytest
 import pytest_asyncio
+from discord.ext import commands
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -13,6 +14,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from bot import config
+from bot.cog import WelcomeAndCoC
 from bot.models import Base
 
 
@@ -118,3 +120,26 @@ def mock_reaction_payload(
     payload.emoji = MagicMock(spec=discord.Emoji)
     payload.emoji.name = "✅"
     return payload
+
+
+@pytest.fixture
+def mock_bot() -> MagicMock:
+    """Create a mock Discord bot."""
+    bot = MagicMock(spec=commands.Bot)
+    bot.latency = 0.05  # Simulate a latency of 50ms
+    return bot
+
+
+@pytest.fixture
+def mock_cog(mock_bot: MagicMock) -> WelcomeAndCoC:
+    """Create a mock instance of the WelcomeAndCoC cog."""
+    cog = WelcomeAndCoC(mock_bot)
+    return cog
+
+
+@pytest.fixture
+def mock_context() -> MagicMock:
+    """Create a mock Discord context."""
+    context = MagicMock(spec=commands.Context)
+    context.send = AsyncMock()
+    return context
