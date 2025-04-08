@@ -53,3 +53,8 @@ env_files = [".env.test"]
 [tool.coverage.run]
 branch = true
 source = ["bot", "tests"]
+
+[tool.coverage.report]
+exclude_also = [
+    'if __name__ == .__main__.:',
+]
