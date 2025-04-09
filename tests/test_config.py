@@ -63,6 +63,7 @@ def test_get_env_var_int_not_integer() -> None:
         "DISCORD_GUILD": "test_guild",
         "MEMBER_ROLE_NAME": "custom_members",
         "COC_MESSAGE_ID": "123456789",
+        "COC_MESSAGE_LINK": "https://discord.com/channels/123456789/987654321/123456789",
     },
 )
 def test_config_variables() -> None:
@@ -75,6 +76,7 @@ def test_config_variables() -> None:
     assert config.DISCORD_GUILD == "test_guild"
     assert config.MEMBER_ROLE_NAME == "custom_members"
     assert config.COC_MESSAGE_ID == 123456789
+    assert config.COC_MESSAGE_LINK == "https://discord.com/channels/123456789/987654321/123456789"
 
 
 @patch.dict(
@@ -84,6 +86,7 @@ def test_config_variables() -> None:
         "DISCORD_TOKEN": "test_token",
         "DISCORD_GUILD": "test_guild",
         "COC_MESSAGE_ID": "123456789",
+        "COC_MESSAGE_LINK": "https://discord.com/channels/123456789/987654321/123456789",
     },
 )
 def test_member_role_name_default() -> None:

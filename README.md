@@ -37,6 +37,7 @@ A Discord bot for the PyGreece online community that handles member onboarding t
    DATABASE_URL=postgresql+asyncpg://<username>:<password>@postgres/<db>
    MEMBER_ROLE_NAME=members
    COC_MESSAGE_ID=<message-id-of-code-of-conduct>
+   COC_MESSAGE_LINK=<message-link-of-code-of-conduct>
    ```
 
 2. Replace the placeholder values with your actual configuration
