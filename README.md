@@ -25,12 +25,18 @@ A Discord bot for the PyGreece online community that handles member onboarding t
 1. Go to the [Discord Developer Portal](https://discord.com/developers/applications)
 2. Create a new application
 3. Go to the "Bot" tab and create a bot
-4. Enable the "Server Members Intent" under Privileged Gateway Intents
-5. Copy the bot token for configuration
+4. Enable the "Server Members Intent" and "Message Content Intent" under Privileged Gateway Intents
+5. Save the bot token for configuration
+6. Go to the "Installation" tab and choose the "bot" option on the applications.commands dropdown for Guild Install
+7. Select "Manage Roles" from permissions
+8. Copy and paste the install link into your browser and invite the bot your server
+9. Ensure the bot role is above the members role in the role hierarchy
+
+> This bot is used as a public bot in a Guild Install, private bot mode and user install will need testing
 
 ### Environment Configuration
 
-1. Copy `.env.sample` to a new file called `.env`:
+Copy `.env.sample` to a new file called `.env` and update the placeholder values:
    ```
    DISCORD_TOKEN=<your-discord-bot-token>
    DISCORD_GUILD=<your-discord-server-name>
@@ -40,7 +46,7 @@ A Discord bot for the PyGreece online community that handles member onboarding t
    COC_MESSAGE_LINK=<message-link-of-code-of-conduct>
    ```
 
-2. Replace the placeholder values with your actual configuration
+> Use `compose.yml` to set DB credentials
 
 ### Local Development
 
