@@ -11,6 +11,7 @@ from bot.models import Member
 
 logger = logging.getLogger(__name__)
 
+
 class WelcomeAndCoC(commands.Cog):
     """The cog that implement CoC acceptance for the PyGreece Discord bot.
 
@@ -30,7 +31,7 @@ class WelcomeAndCoC(commands.Cog):
         logger.info("PyGreece bot is now logged in")
 
     async def _send_welcome_message(
-    self, member: discord.Member, db_member: Member, content: str
+        self, member: discord.Member, db_member: Member, content: str
     ) -> bool:
         """Sends a welcome message to the member via DM."""
 
@@ -52,9 +53,9 @@ class WelcomeAndCoC(commands.Cog):
         except Exception as e:
             logger.error(f"Error sending DM to {member.name}: {e}")
             return False
-        
+
     async def _send_welcome_message_in_channel(
-    self, member: discord.Member, db_member: Member, content: str
+        self, member: discord.Member, db_member: Member, content: str
     ) -> None:
         """Sends a welcome message to the member via channel."""
 
@@ -63,29 +64,26 @@ class WelcomeAndCoC(commands.Cog):
             msg = "Guild not found. Possibly an issue with intents."
             logger.warning(msg)
             raise WrongGuildException(msg)
-        
+
         overwrites = {
             guild.default_role: discord.PermissionOverwrite(read_messages=False),
             member: discord.PermissionOverwrite(read_messages=True, send_messages=True),
-            self.bot.user: discord.PermissionOverwrite(read_messages=True, send_messages=True)
+            self.bot.user: discord.PermissionOverwrite(read_messages=True, send_messages=True),
         }
 
         channel = await guild.create_text_channel(
-            name=f"welcome-{member.name}",
-            overwrites=overwrites,
-            reason="Fallback for closed DMs"
+            name=f"welcome-{member.name}", overwrites=overwrites, reason="Fallback for closed DMs"
         )
-        
+
         await channel.send(content)
         logger.info(f"Sent welcome message to {member.name} ({member.id}) in channel")
-        
+
         async with db.get_session() as session:
             db_member.dm_sent = True
             session.add(db_member)
 
         logger.info(f"Updated dm_sent=True for {member.name} ({member.id}) in database.")
 
-        
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member) -> None:
         """Called when a member joins the server."""
@@ -103,10 +101,13 @@ class WelcomeAndCoC(commands.Cog):
         else:
             logger.info(f"New member {member.name} ({member.id}) added to database.")
             message_content = messages.NEW_MEMBER_MESSAGE.format(
-                name=member.name, guild=member.guild.name, link=config.COC_MESSAGE_LINK)
+                name=member.name, guild=member.guild.name, link=config.COC_MESSAGE_LINK
+            )
 
         if not await self._send_welcome_message(member, db_member, message_content):
-            logger.info(f"Failed to send welcome message to {member.name} ({member.id}), sending in channel")
+            logger.info(
+                f"Failed to send welcome message to {member.name} ({member.id}), sending in channel"
+            )
             await self._send_welcome_message_in_channel(member, db_member, message_content)
 
     async def _assign_role(
@@ -176,7 +177,7 @@ class WelcomeAndCoC(commands.Cog):
             db_member.reacted = True
             session.add(db_member)
         logger.info(f"Updated reacted=True for {member.name} ({member.id}) in database.")
-        
+
         # Delete the welcome channel
         channel_name = f"welcome-{member.name}"
         channel = discord.utils.get(guild.channels, name=channel_name)
