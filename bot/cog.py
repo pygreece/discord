@@ -179,11 +179,11 @@ class WelcomeAndCoC(commands.Cog):
         logger.info(f"Updated reacted=True for {member.name} ({member.id}) in database.")
 
         # Delete the welcome channel
-        channel_name = f"welcome-{member.name}"
-        channel = discord.utils.get(guild.channels, name=channel_name)
-        if channel:
-            await channel.delete(reason="Member reacted to CoC message")
-            logger.info(f"Deleted welcome channel for {member.name} ({member.id})")
+        for channel in guild.text_channels:
+            if channel.name.startswith(f"welcome-{member.name}"):
+                await channel.delete(reason="Member reacted to CoC message")
+                logger.info(f"Deleted welcome channel for {member.name} ({member.id})")
+                break
 
     @commands.command()
     @commands.guild_only()
