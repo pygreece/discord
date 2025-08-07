@@ -9,9 +9,10 @@ from bot import db
 
 logger = logging.getLogger(__name__)
 
+
 class Utility(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
-        self.bot = bot        
+        self.bot = bot
         self.start_time = datetime.datetime.now(datetime.timezone.utc)
 
     @commands.command()
@@ -24,7 +25,7 @@ class Utility(commands.Cog):
         self.bot.tree.copy_global_to(guild=discord.Object(ctx.guild.id))
         await self.bot.tree.sync(guild=discord.Object(ctx.guild.id))
         await ctx.reply("Command tree synced.")
-        
+
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(administrator=True)

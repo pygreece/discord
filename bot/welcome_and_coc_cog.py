@@ -10,6 +10,7 @@ from bot.senders import send_direct_message, send_message_in_channel
 
 logger = logging.getLogger(__name__)
 
+
 class WelcomeAndCoC(commands.Cog):
     """The cog that implements CoC acceptance for the PyGreece Discord bot.
 
@@ -34,7 +35,7 @@ class WelcomeAndCoC(commands.Cog):
         async with db.get_session() as session:
             # Get or create the member in database
             db_member, created_now = await Member.get_or_create(member.id, session=session)
-        
+
         # Prepare welcome message
         if not created_now:
             logger.info(f"Member {member.name} ({member.id}) has already joined the guild before.")
@@ -56,7 +57,13 @@ class WelcomeAndCoC(commands.Cog):
                 logger.info(f"Updated dm_sent=True for {member.name} ({member.id}) in database.")
             except Exception as e:
                 logger.error(f"Error updating dm_sent for {member.name} ({member.id}): {e}")
-        elif await send_message_in_channel(config.WELCOME_CATEGORY_AND_CHANNEL_PREFIX, member.guild, self.bot, member, message_content):
+        elif await send_message_in_channel(
+            config.WELCOME_CATEGORY_AND_CHANNEL_PREFIX,
+            member.guild,
+            self.bot,
+            member,
+            message_content,
+        ):
             try:
                 async with db.get_session() as session:
                     db_member.dm_sent = True
@@ -69,20 +76,30 @@ class WelcomeAndCoC(commands.Cog):
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member) -> None:
         """Called when a member leaves the server."""
-        
+
         # Delete the welcome channel and/or category
         guild = member.guild
         for channel in guild.text_channels:
-            if channel.name.startswith(f"{config.WELCOME_CATEGORY_AND_CHANNEL_PREFIX}-{member.name}"):
+            if channel.name.startswith(
+                f"{config.WELCOME_CATEGORY_AND_CHANNEL_PREFIX}-{member.name}"
+            ):
                 for category in guild.categories:
-                    if category.name.startswith(f"{config.WELCOME_CATEGORY_AND_CHANNEL_PREFIX}-{config.MEMBER_ROLE_NAME}") \
-                    and len(category.channels) == 1:
-                        await category.delete(reason=f"Empty queue")
-                        logger.info(F"Deleted \"{config.WELCOME_CATEGORY_AND_CHANNEL_PREFIX}-{config.MEMBER_ROLE_NAME}\" \
-                                    category after {member.name} ({member.id}) emptied the queue by leaving the server")
+                    if (
+                        category.name.startswith(
+                            f"{config.WELCOME_CATEGORY_AND_CHANNEL_PREFIX}-{config.MEMBER_ROLE_NAME}"
+                        )
+                        and len(category.channels) == 1
+                    ):
+                        await category.delete(reason="Empty queue")
+                        logger.info(
+                            f'Deleted "{config.WELCOME_CATEGORY_AND_CHANNEL_PREFIX}-{config.MEMBER_ROLE_NAME}" \
+                                    category after {member.name} ({member.id}) emptied the queue by leaving the server'
+                        )
                         break
                 await channel.delete(reason="Member left the server")
-                logger.info(f"Deleted welcome channel for {member.name} ({member.id}) after member left the server")
+                logger.info(
+                    f"Deleted welcome channel for {member.name} ({member.id}) after member left the server"
+                )
                 break
 
     async def _assign_role(
@@ -139,7 +156,7 @@ class WelcomeAndCoC(commands.Cog):
 
         if payload.message_id != config.COC_MESSAGE_ID or payload.emoji.name != "👍":
             return
-        
+
         try:
             guild, member = await self._get_guild_and_user(payload)
         except (WrongGuildException, WrongUserException):
@@ -155,14 +172,24 @@ class WelcomeAndCoC(commands.Cog):
 
         # Delete the welcome channel and/or category
         for channel in guild.text_channels:
-            if channel.name.startswith(f"{config.WELCOME_CATEGORY_AND_CHANNEL_PREFIX}-{member.name}"):
+            if channel.name.startswith(
+                f"{config.WELCOME_CATEGORY_AND_CHANNEL_PREFIX}-{member.name}"
+            ):
                 for category in guild.categories:
-                    if category.name.startswith(f"{config.WELCOME_CATEGORY_AND_CHANNEL_PREFIX}-{config.MEMBER_ROLE_NAME}") \
-                    and len(category.channels) == 1:
-                        await category.delete(reason=f"Empty queue")
-                        logger.info(F"Deleted \"{config.WELCOME_CATEGORY_AND_CHANNEL_PREFIX}-{config.MEMBER_ROLE_NAME}\" \
-                                    after {member.name} ({member.id}) emptied the queue by reacting to CoC message")
+                    if (
+                        category.name.startswith(
+                            f"{config.WELCOME_CATEGORY_AND_CHANNEL_PREFIX}-{config.MEMBER_ROLE_NAME}"
+                        )
+                        and len(category.channels) == 1
+                    ):
+                        await category.delete(reason="Empty queue")
+                        logger.info(
+                            f'Deleted "{config.WELCOME_CATEGORY_AND_CHANNEL_PREFIX}-{config.MEMBER_ROLE_NAME}" \
+                                    after {member.name} ({member.id}) emptied the queue by reacting to CoC message'
+                        )
                         break
                 await channel.delete(reason="Member reacted to CoC message")
-                logger.info(f"Deleted welcome channel for {member.name} ({member.id}) after reaction to CoC message")
+                logger.info(
+                    f"Deleted welcome channel for {member.name} ({member.id}) after reaction to CoC message"
+                )
                 break
