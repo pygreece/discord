@@ -77,11 +77,13 @@ docker-compose up -d
 
 - `bot/`: Main bot code
   - `__main__.py`: Entry point
+  - `assign_role.py`: Assigns a role to a member
   - `config.py`: Configuration handling
   - `db.py`: Database connection management
   - `exceptions.py`: Custom exceptions
   - `messages.py`: Messages sent to members based on actions
   - `models.py`: Database models
+  - `sanitizers.py`: Prevents invalid channel names
   - `senders.py`: Sends dms, creates private categories and channels if dms are closed
   - `utility_cog.py`: Administration commands
   - `welcome_and_coc_cog.py`: Actions related to new members joining
