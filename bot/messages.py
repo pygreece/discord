@@ -22,6 +22,3 @@ ALREADY_EXISTS_MESSAGE = (
     "As soon as you do, I'll give you permissions to see all the other channels "
     "and join in on the fun! "
 )
-    "---\n\n"
-    "Hey @{name}, we see that you re-joined {guild}! It's great to have you back! 😊"
-)

@@ -44,6 +44,7 @@ Copy `.env.sample` to a new file called `.env` and update the placeholder values
    MEMBER_ROLE_NAME=members
    COC_MESSAGE_ID=<message-id-of-code-of-conduct>
    COC_MESSAGE_LINK=<message-link-of-code-of-conduct>
+   WELCOME_CATEGORY_AND_CHANNEL_PREFIX=welcome
    ```
 
 > Use `compose.yml` to set DB credentials
