@@ -28,10 +28,31 @@ def get_env_var_int(name: str, default: int | None = None) -> int:
         raise IncorrectConfigException(f"{name} must be an integer, got {value}")
 
 
-DATABASE_URL = get_env_var("DATABASE_URL")
 DISCORD_TOKEN = get_env_var("DISCORD_TOKEN")
 DISCORD_GUILD = get_env_var("DISCORD_GUILD")
+DATABASE_URL = get_env_var("DATABASE_URL")
 MEMBER_ROLE_NAME = get_env_var("MEMBER_ROLE_NAME", "members")
 COC_MESSAGE_ID = get_env_var_int("COC_MESSAGE_ID")
 COC_MESSAGE_LINK = get_env_var("COC_MESSAGE_LINK")
-WELCOME_CATEGORY_AND_CHANNEL_PREFIX = get_env_var("WELCOME_CATEGORY_AND_CHANNEL_PREFIX", "welcome")
+WELCOME_CATEGORY_NAME = get_env_var("WELCOME_CATEGORY_NAME", "Private Welcome Channels")
+WELCOME_CHANNEL_PREFIX = get_env_var("WELCOME_CHANNEL_PREFIX", "welcome")
+ACCEPTABLE_REACTION_EMOJIS = [
+    "👍",  # Thumbs up - approval
+    "❤️",  # Heart - love and affection
+    "✅",  # Check mark - confirmation
+    "💯",  # 100 - perfection or strong approval
+    "🎉",  # Party popper - celebration
+    "😊",  # Smiling face - warmth and friendliness
+    "😍",  # Smiling face with hearts - love and positivity
+    "🤝",  # Handshake - agreement or partnership
+    "🙌",  # Raising hands - celebration or success
+    "🌟",  # Star - excellence or positivity
+    "🤩",  # Star-struck – admiration and excitement
+    "🧡",  # Orange heart – warmth and friendliness
+    "💖",  # Sparkling heart - affection and positivity
+    "🤗",  # Hugging face - acceptance and comfort
+    "🌈",  # Rainbow - hope and inclusion
+    "☀️",  # Sun - brightness and optimism
+    "🕊️",  # Dove - peace and acceptance
+    "🥰",  # Smiling face with hearts - love and positivity
+]
