@@ -14,12 +14,12 @@ class Utility(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
         self.start_time = datetime.datetime.now(datetime.timezone.utc)
-    
+
     @commands.Cog.listener()
     async def on_ready(self) -> None:
         """Called when the bot is ready."""
         logger.info("PyGreece bot is now logged in")
-    
+
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(administrator=True)

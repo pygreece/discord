@@ -4,9 +4,9 @@ import discord
 from discord.ext import commands
 
 from bot import config, db, messages
-from bot.models import Member
-from bot.senders import send_message_in_channel, delete_channel_and_or_category
 from bot.assign_role import assign_role
+from bot.models import Member
+from bot.senders import delete_channel_and_or_category, send_message_in_channel
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +59,6 @@ class WelcomeAndCoC(commands.Cog):
             logger.info(f"Updated dm_sent=True for {member.name} ({member.id}) in database.")
         except Exception as e:
             logger.error(f"Error updating dm_sent for {member.name} ({member.id}): {e}")
-            
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member) -> None:
@@ -67,26 +66,31 @@ class WelcomeAndCoC(commands.Cog):
 
         await delete_channel_and_or_category(
             member,
-            config.WELCOME_CHANNEL_PREFIX, 
-            config.WELCOME_CATEGORY_NAME, 
+            config.WELCOME_CHANNEL_PREFIX,
+            config.WELCOME_CATEGORY_NAME,
             "Member left the server",
         )
-        
+
         try:
             async with db.get_session() as session:
                 db_member, _ = await Member.get_or_create(id=member.id, session=session)
                 db_member.dm_sent = False
                 db_member.reacted = False
-                session.add(db_member)    
-                logger.info(f"Updated dm_sent=False and reacted=False for {member.name} ({member.id}) in database.")
+                session.add(db_member)
+                logger.info(
+                    f"Updated dm_sent=False and reacted=False for {member.name} ({member.id}) in database."
+                )
         except Exception as e:
             logger.error(f"Error updating reacted for {member.name} ({member.id}): {e}")
-            
+
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
         """Grants the 'members' role and updates the database when a user reacts to the Code of Conduct message."""
 
-        if payload.message_id != config.COC_MESSAGE_ID or payload.emoji.name not in config.ACCEPTABLE_REACTION_EMOJIS:
+        if (
+            payload.message_id != config.COC_MESSAGE_ID
+            or payload.emoji.name not in config.ACCEPTABLE_REACTION_EMOJIS
+        ):
             return
 
         member = payload.member
@@ -106,10 +110,10 @@ class WelcomeAndCoC(commands.Cog):
         except Exception as e:
             logger.error(f"Error updating reacted for {member.name} ({member.id}): {e}")
         self.bot.dispatch("member_reacted_to_coc", member)
-        
+
         await delete_channel_and_or_category(
             member,
-            config.WELCOME_CHANNEL_PREFIX, 
-            config.WELCOME_CATEGORY_NAME, 
-            "Member reacted to CoC message"
+            config.WELCOME_CHANNEL_PREFIX,
+            config.WELCOME_CATEGORY_NAME,
+            "Member reacted to CoC message",
         )
