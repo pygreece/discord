@@ -93,20 +93,14 @@ class WelcomeAndCoC(commands.Cog):
             )
 
     @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
-        """Grants the 'members' role and updates the database when a user reacts to the Code of Conduct message."""
+    async def on_member_reacted_to_coc(self, member: discord.Member) -> None:
+        """
+        Grants the 'members' role and updates the database when a user reacts to the Code of Conduct message.
+        Also invokes the new_member_reacted_to_coc event so the ticket-verification cog can handle it.
+        """
 
-        if (
-            payload.message_id != config.COC_MESSAGE_ID
-            or payload.emoji.name not in config.ACCEPTABLE_REACTION_EMOJIS
-        ):
-            return
-
-        member = payload.member
-        if not member or member.bot:
-            logger.info("Member not found or it is a bot.")
-            return
-
+        logger.info("Event on_member_reacted_to_coc triggered.")
+        
         if not await assign_role(member, config.MEMBER_ROLE_NAME):
             return
 
@@ -116,15 +110,16 @@ class WelcomeAndCoC(commands.Cog):
                 logger.info("Member already reacted to CoC message.")
                 return
 
-        try:
             db_member.reacted = True
-            session.add(db_member)
-            logger.info(f"Updated reacted=True for {member.name} ({member.id}) in database.")
-        except Exception as e:
-            logger.error(f"Error updating reacted for {member.name} ({member.id}): {e}")
-
+            try:
+                session.add(db_member)
+                logger.info(f"Updated reacted=True for {member.name} ({member.id}) in database.")
+            except Exception as e:
+                logger.error(f"Error updating reacted for {member.name} ({member.id}): {e}")
+                return
+            
         self.bot.dispatch("new_member_reacted_to_coc", member)
-
+        
         await delete_private_thread(
             config.COC_CHANNEL_ID,
             config.COC_THREAD_PREFIX,

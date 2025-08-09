@@ -30,6 +30,7 @@ def get_env_var_int(name: str, default: int | None = None) -> int:
 
 DISCORD_TOKEN = get_env_var("DISCORD_TOKEN")
 DISCORD_GUILD = get_env_var("DISCORD_GUILD")
+ORGANIZER_ROLE_NAME = get_env_var("ORGANIZER_ROLE_NAME", "organizers")
 DATABASE_URL = get_env_var("DATABASE_URL")
 
 MEMBER_ROLE_NAME = get_env_var("MEMBER_ROLE_NAME", "members")
@@ -37,6 +38,13 @@ COC_MESSAGE_LINK = get_env_var("COC_MESSAGE_LINK")
 COC_MESSAGE_ID = int(COC_MESSAGE_LINK.split("/")[-1])
 COC_CHANNEL_ID = int(COC_MESSAGE_LINK.split("/")[-2])
 COC_THREAD_PREFIX = get_env_var("WELCOME_CHANNEL_PREFIX", "welcome")
+
+TICKET_HOLDER_ROLE_NAME = get_env_var("TICKET_HOLDER_ROLE_NAME", "ticketholders")
+TICKET_MESSAGE_LINK = get_env_var("TICKET_MESSAGE_LINK")
+TICKET_MESSAGE_ID = int(TICKET_MESSAGE_LINK.split("/")[-1])
+TICKET_CHANNEL_ID = int(TICKET_MESSAGE_LINK.split("/")[-2])
+TICKET_THREAD_PREFIX = get_env_var("TICKET_CHANNEL_PREFIX", "ticket-verification")
+
 ACCEPTABLE_REACTION_EMOJIS = [
     "👍",  # Thumbs up - approval
     "❤️",  # Heart - love and affection

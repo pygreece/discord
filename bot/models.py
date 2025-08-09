@@ -1,8 +1,8 @@
 from typing import Self
 
-from sqlalchemy import BigInteger, select
+from sqlalchemy import BigInteger, ForeignKey, select
 from sqlalchemy.ext.asyncio import AsyncAttrs, AsyncSession
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 type BigInt = int
 
@@ -37,3 +37,16 @@ class Member(Base):
         await session.flush()
         await session.refresh(new_instance)
         return new_instance, True
+
+class Ticket(Base):
+    __tablename__ = "tickets"
+
+    id: Mapped[BigInt] = mapped_column(primary_key=True, autoincrement=False)
+    member_id: Mapped[BigInt] = mapped_column(BigInteger, ForeignKey("members.id"), nullable=True)
+    member = relationship("Member")
+
+    @classmethod
+    async def get_by_id(cls, id: int, *, session: AsyncSession) -> Self | None:
+        stmt = select(cls).filter(cls.id == id)
+        result = await session.execute(stmt)
+        return result.scalar_one_or_none()

@@ -40,6 +40,7 @@ Copy `.env.sample` to a new file called `.env` and update the placeholder values
    ```dosini
    DISCORD_TOKEN=<your-discord-bot-token>
    DISCORD_GUILD=<your-discord-server-name>
+   ORGANIZER_ROLE_NAME=organizers
    DATABASE_URL=postgresql+asyncpg://<username>:<password>@postgres/<db>
 
    MEMBER_ROLE_NAME=members
@@ -84,6 +85,7 @@ docker-compose up -d
   - `models.py`: Database models
   - `sanitizers.py`: Prevents invalid channel names
   - `senders.py`: Sends dms, creates private categories and channels if dms are closed
+  - `ticket_cog.py`: Ticket verification system
   - `utility_cog.py`: Administration commands
   - `welcome_and_coc_cog.py`: Actions related to new members joining
 - `tests/`: Test suite

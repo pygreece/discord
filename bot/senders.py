@@ -32,17 +32,21 @@ async def send_private_message_in_thread(
         return
 
     member_name = sanitize_user_name(member.name, member.id)
-    thread = await channel.create_thread(
-        name=f"{thread_prefix}-{member_name}",
-        reason=reason,
-        type=discord.ChannelType.private_thread,
-        invitable=False,
-    )
+    
+    thread = dget(channel.threads, name=f"{thread_prefix}-{member_name}")
+    if not thread:    
+        thread = await channel.create_thread(
+            name=f"{thread_prefix}-{member_name}",
+            reason=reason,
+            type=discord.ChannelType.private_thread,
+            invitable=False,
+        )
     if not thread:
         logger.error(f"Failed to create thread for {member.name} ({member.id}).")
         return
 
-    await thread.add_user(member)
+    if member not in thread.members:
+        await thread.add_user(member)
     await thread.send(content=content)
     logger.info(
         f"Sent private message in thread for {member.name} ({member.id}) because {reason}."

@@ -4,6 +4,7 @@ import logging
 import discord
 from discord.ext import commands
 from sqlalchemy import select
+from bot.config import COC_MESSAGE_ID, TICKET_MESSAGE_ID, ACCEPTABLE_REACTION_EMOJIS, ORGANIZER_ROLE_NAME
 
 from bot import db
 
@@ -15,11 +16,32 @@ class Utility(commands.Cog):
         self.bot = bot
         self.start_time = datetime.datetime.now(datetime.timezone.utc)
 
+
     @commands.Cog.listener()
     async def on_ready(self) -> None:
         """Called when the bot is ready."""
         logger.info("PyGreece bot is now logged in")
 
+
+    @commands.Cog.listener()
+    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
+        """Handles members' reactions to messages."""
+        
+        if not payload.member or payload.member.bot:
+            logger.info("Member not found or it is a bot.")
+            return
+        
+        logger.info("Event on_raw_reaction_add triggered.")
+        
+        if payload.emoji.name not in ACCEPTABLE_REACTION_EMOJIS:
+            logger.info("The reaction emoji is not in the acceptable list.")
+        elif payload.message_id == COC_MESSAGE_ID:
+            self.bot.dispatch("member_reacted_to_coc", member=payload.member)
+        elif payload.message_id == TICKET_MESSAGE_ID:
+            self.bot.dispatch("member_reacted_to_ticket", member=payload.member)
+        else:
+            logger.info("The message ID was irrelevant.")
+    
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(administrator=True)
@@ -33,7 +55,7 @@ class Utility(commands.Cog):
 
     @commands.hybrid_command()  # type: ignore
     @commands.guild_only()
-    @commands.has_role("pygreece organizers")
+    @commands.has_role(ORGANIZER_ROLE_NAME)
     async def health(self, ctx: commands.Context[commands.Bot]) -> None:
         """Send the bot's health status."""
         logger.info("Received health check command.")
