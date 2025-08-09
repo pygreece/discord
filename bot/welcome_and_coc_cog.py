@@ -2,11 +2,12 @@ import logging
 
 import discord
 from discord.ext import commands
+from discord.utils import get as dget
 
 from bot import config, db, messages
 from bot.assign_role import assign_role
 from bot.models import Member
-from bot.senders import delete_channel_and_or_category, send_message_in_channel
+from bot.senders import send_private_message_in_thread, delete_private_thread
 
 logger = logging.getLogger(__name__)
 
@@ -42,14 +43,14 @@ class WelcomeAndCoC(commands.Cog):
             message_content = messages.NEW_MEMBER_MESSAGE.format(
                 name=member.mention, guild=member.guild.name, link=config.COC_MESSAGE_LINK
             )
-
-        # Creates the channel (and the category if it doesn't exist)
-        await send_message_in_channel(
-            self.bot,
+    
+        # Creates the thread
+        await send_private_message_in_thread(
+            config.COC_CHANNEL_ID,
+            config.COC_THREAD_PREFIX,
             member,
             message_content,
-            config.WELCOME_CHANNEL_PREFIX,
-            config.WELCOME_CATEGORY_NAME,
+            f"Private {config.COC_THREAD_PREFIX} thread for {member.name} ({member.id})"
         )
         try:
             async with db.get_session() as session:
@@ -64,24 +65,29 @@ class WelcomeAndCoC(commands.Cog):
     async def on_member_remove(self, member: discord.Member) -> None:
         """Called when a member leaves the server."""
 
-        await delete_channel_and_or_category(
-            member,
-            config.WELCOME_CHANNEL_PREFIX,
-            config.WELCOME_CATEGORY_NAME,
-            "Member left the server",
-        )
+        async with db.get_session() as session:
+            db_member, _ = await Member.get_or_create(member.id, session=session)
 
+        if db_member.dm_sent and not db_member.reacted:
+            await delete_private_thread(
+                config.COC_CHANNEL_ID,
+                config.COC_THREAD_PREFIX,
+                member,
+                f"{member.name} ({member.id}) left the server"
+            )
+        else:
+            logger.info(f"Member {member.name} ({member.id}) left the guild but there was no CoC thread to delete.")
+        
+        db_member.dm_sent = False
+        db_member.reacted = False
         try:
             async with db.get_session() as session:
-                db_member, _ = await Member.get_or_create(id=member.id, session=session)
-                db_member.dm_sent = False
-                db_member.reacted = False
                 session.add(db_member)
                 logger.info(
                     f"Updated dm_sent=False and reacted=False for {member.name} ({member.id}) in database."
                 )
         except Exception as e:
-            logger.error(f"Error updating reacted for {member.name} ({member.id}): {e}")
+            logger.error(f"Error updating dm_sent and reacted for {member.name} ({member.id}): {e}")
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
@@ -98,22 +104,24 @@ class WelcomeAndCoC(commands.Cog):
             return
         await assign_role(member, config.MEMBER_ROLE_NAME)
 
+        async with db.get_session() as session:
+            db_member, _ = await Member.get_or_create(id=member.id, session=session)
+            if db_member.reacted:
+                logger.info("Member already reacted to CoC message.")
+                return
+            
         try:
-            async with db.get_session() as session:
-                db_member, _ = await Member.get_or_create(id=member.id, session=session)
-                if db_member.reacted:
-                    logger.info("Member already reacted to CoC message.")
-                    return
-                db_member.reacted = True
-                session.add(db_member)
+            db_member.reacted = True
+            session.add(db_member)
             logger.info(f"Updated reacted=True for {member.name} ({member.id}) in database.")
         except Exception as e:
             logger.error(f"Error updating reacted for {member.name} ({member.id}): {e}")
+        
         self.bot.dispatch("member_reacted_to_coc", member)
 
-        await delete_channel_and_or_category(
+        await delete_private_thread(
+            config.COC_CHANNEL_ID,
+            config.COC_THREAD_PREFIX,
             member,
-            config.WELCOME_CHANNEL_PREFIX,
-            config.WELCOME_CATEGORY_NAME,
-            "Member reacted to CoC message",
+            f"{member.name} ({member.id}) reacted to coc message"
         )
