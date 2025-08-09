@@ -103,10 +103,13 @@ class WelcomeAndCoC(commands.Cog):
             return
 
         member = payload.member
-        if not member:
+        if (not member or member.bot):
+            logger.info("Member not found or it is a bot.")
             return
-        await assign_role(member, config.MEMBER_ROLE_NAME)
-
+        
+        if not await assign_role(member, config.MEMBER_ROLE_NAME):
+            return
+        
         async with db.get_session() as session:
             db_member, _ = await Member.get_or_create(id=member.id, session=session)
             if db_member.reacted:
@@ -120,7 +123,7 @@ class WelcomeAndCoC(commands.Cog):
         except Exception as e:
             logger.error(f"Error updating reacted for {member.name} ({member.id}): {e}")
 
-        self.bot.dispatch("member_reacted_to_coc", member)
+        self.bot.dispatch("new_member_reacted_to_coc", member)
 
         await delete_private_thread(
             config.COC_CHANNEL_ID,
