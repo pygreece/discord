@@ -103,13 +103,13 @@ class WelcomeAndCoC(commands.Cog):
             return
 
         member = payload.member
-        if (not member or member.bot):
+        if not member or member.bot:
             logger.info("Member not found or it is a bot.")
             return
-        
+
         if not await assign_role(member, config.MEMBER_ROLE_NAME):
             return
-        
+
         async with db.get_session() as session:
             db_member, _ = await Member.get_or_create(id=member.id, session=session)
             if db_member.reacted:
