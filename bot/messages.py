@@ -43,21 +43,31 @@ ASK_FOR_TICKET_MESSAGE = (
 )
 
 INVALID_THREAD_MESSAGE = (
-    "This command can only be used in the user's thread in the ticket channel.\n"
-    "Please react to the [ticket message]({link}) if the thread is missing."
+    "Αυτή η εντολή μπορεί να χρησιμοποιηθεί μόνο στο προσωπικό σου νήμα στο κανάλι για τα εισιτήρια. "
+    "Παρακαλώ αντίδρασε με ένα thumbs-up (👍) στο [μήνυμα για τα εισιτήρια]({link}).\n\n"
+    "---\n\n"
+    "This command can only be used in the user's thread in the ticket channel. "
+    "Please react to the [ticket message]({link}) if the thread is missing. "
     )
 
 TICKET_ID_MISSING_MESSAGE = (
-    
-    "Please provide a ticket ID."
+    "Παρακαλώ συμπερέλαβε τον αριθμό του εισιτηρίου μετά το !ticket.\n\n"
+    "---\n\n"
+    "Please provide a ticket ID after !ticket. "
 )
 
 INVALID_TICKET_ID_MESSAGE = (
-    "Invalid ticket ID, please try again."
+    "Λάθος αριθμός εισιτηρίου, παρακαλώ ξαναπροσπάθησε.\n\n"
+    "---\n\n"
+    "Invalid ticket ID, please try again. "
 )
 
 COC_NOT_ACCEPTED_MESSAGE = (
-    "You have not accepted the [Code of Conduct]({link}), please react with a thumbs-up (👍) on the message."
+    "Δεν έχεις δεχτεί τον [Κώδικα Δεοντολογίας]({link}), "
+    "παρακαλώ αντίδρασε με ένα thumbs-up (👍) στο [μήνυμα]({link}).\n\n"
+    "---\n\n"
+    "You have not accepted the [Code of Conduct]({link}), "
+    "please react with a thumbs-up (👍) on the [message]({link}). "
 )
 
 TICKET_NOT_FOUND_IN_DATABASE_MESSAGE = (
@@ -65,7 +75,7 @@ TICKET_NOT_FOUND_IN_DATABASE_MESSAGE = (
     "Αν κάναμε λάθος, στείλε μήνυμα στην ομάδα της διοργάνωσης: {role}.\n\n"
     "---\n\n"
     "The ticket you provided does not exist! :'(\n"
-    "If we made a mistake, shoot the organizers a message: {role}."
+    "If we made a mistake, shoot the organizers a message: {role}. "
 )
 
 TICKET_IN_USE_MESSAGE = (
@@ -77,11 +87,15 @@ TICKET_IN_USE_MESSAGE = (
 )
 
 TICKET_DOUBLE_CLAIM_MESSAGE= (
-    "You have already claimed this ticket."
+    "Έχεις ήδη επικυρώσει αυτό το εισητήριο.\n\n"
+    "---\n\n"
+    "You have already claimed this ticket. "
 )
 
 TICKET_DB_ERROR_MESSAGE = (
-    "The ticket was not claimed due to a database error. Please contact the organizers: {role}."
+    "Το εισητήριό σου δεν επικυρώθηκε λόγω σφάλματος στη βάση δεδομένων. Επικοινώνησε με την ομάδα της διοργάνωσης: {role}.\n\n"
+    "---\n\n"
+    "The ticket was not claimed due to a database error. Please contact the organizers: {role}. "
 )
 
 TICKET_ACCEPTED_MESSAGE = (
@@ -91,5 +105,7 @@ TICKET_ACCEPTED_MESSAGE = (
 )
 
 TICKET_ROLE_ASSIGNMENT_ERROR = (
-    "The ticket role was not assigned due to a database error. Please contact the organizers: {role}."
+    "Ο ρόλος του event δε σου δόθηκε λόγω σφάλματος. Επικοινώνησε με την ομάδα της διοργάνωσης: {role}.\n\n"
+    "---\n\n"
+    "The attendee role was not assigned due to an error. Please contact the organizers: {role}. "
 )

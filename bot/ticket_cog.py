@@ -126,12 +126,12 @@ class TicketVerification(commands.Cog):
                 return
             if db_ticket.member_id is not None and db_ticket.member_id != db_member.id:
                 await ctx.send(messages.TICKET_IN_USE_MESSAGE.format(role=og_mention))
-                logger.info(f"Member {ctx.author.name} ({ctx.author.id}) was denied a ticket."
+                logger.warning(f"Member {ctx.author.name} ({ctx.author.id}) was denied a ticket."
                                 " The ticket was already claimed.")
                 return
             elif db_ticket.member_id is not None and db_ticket.member_id == db_member.id:
                 await ctx.send(messages.TICKET_DOUBLE_CLAIM_MESSAGE)
-                logger.info(f"Member {ctx.author.name} ({ctx.author.id}) was denied a ticket."
+                logger.warning(f"Member {ctx.author.name} ({ctx.author.id}) was denied a ticket."
                                 " They already claimed this ticket.")
                 return
             
