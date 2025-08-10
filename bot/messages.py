@@ -62,6 +62,12 @@ INVALID_TICKET_ID_MESSAGE = (
     "Invalid ticket ID, please try again. "
 )
 
+TICKET_MEMBER_ALREADY_CLAIMED_MESSAGE = (
+    "Έχεις ήδη επικυρώσει ένα εισιτήριο! 😊\n\n"
+    "---\n\n"
+    "You have already claimed a ticket! 😊\n\n"
+)
+
 COC_NOT_ACCEPTED_MESSAGE = (
     "Δεν έχεις δεχτεί τον [Κώδικα Δεοντολογίας]({link}), "
     "παρακαλώ αντίδρασε με ένα thumbs-up (👍) στο [μήνυμα]({link}).\n\n"

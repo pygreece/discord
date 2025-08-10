@@ -4,12 +4,13 @@ import discord
 from discord.utils import get as dget
 
 from bot.sanitizers import sanitize_user_name
+from bot.views.base_view import BaseView
 
 logger = logging.getLogger(__name__)
 
 
 async def send_private_message_in_thread(
-    channel_id: int, thread_prefix: str, member: discord.Member, content: str, reason: str
+    channel_id: int, thread_prefix: str, member: discord.Member, content: str, reason: str, view: BaseView | None = None
 ) -> None:
     """
     Creates a private thread, adds the member to it and sends a message inside it.
@@ -47,11 +48,15 @@ async def send_private_message_in_thread(
 
     if member not in thread.members:
         await thread.add_user(member)
-    await thread.send(content=content)
+        
+    if view:
+        view.message = await thread.send(content=content)
+        await view._edit(view=view)
+    else:
+        await thread.send(content=content)
     logger.info(
-        f"Sent private message in thread for {member.name} ({member.id}) because {reason}."
+        f"Sent private message{' with view' if view else ''} in thread for {member.name} ({member.id}) because {reason}."
     )
-
 
 async def delete_private_thread(
     channel_id: int, thread_prefix: str, member: discord.Member, reason: str

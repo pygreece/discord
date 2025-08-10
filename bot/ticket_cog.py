@@ -5,9 +5,11 @@ from discord.ext import commands
 
 from bot import config, db, messages
 from bot.models import Member, Ticket
+from bot.views.ticket_view import TicketView
 from bot.senders import send_private_message_in_thread, delete_private_thread
 from bot.assign_role import assign_role
 from bot.sanitizers import sanitize_ticket_id
+from bot.reactions import member_has_reacted
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +51,8 @@ class TicketVerification(commands.Cog):
             config.TICKET_THREAD_PREFIX,
             member,
             messages.ASK_FOR_TICKET_MESSAGE.format(name=member.mention),
-            f"private {config.TICKET_THREAD_PREFIX} thread"
+            f"private {config.TICKET_THREAD_PREFIX} thread",
+            view=TicketView(member._user)
         )
         
     @commands.Cog.listener()
@@ -72,8 +75,10 @@ class TicketVerification(commands.Cog):
         logger.info(f"Ticket command received from {ctx.author.name}.")
         
         # Ensure command is used in a private ticket channel
-        is_valid_thread = (isinstance(ctx.channel, discord.Thread)
-                           and ctx.channel.name.startswith(config.TICKET_THREAD_PREFIX))
+        is_valid_thread = (
+            isinstance(ctx.channel, discord.Thread)
+            and ctx.channel.name.startswith(config.TICKET_THREAD_PREFIX)
+        )
         if not is_valid_thread:
             await ctx.send(messages.INVALID_THREAD_MESSAGE.format(link=config.TICKET_MESSAGE_LINK), delete_after=10)
             return
@@ -93,22 +98,29 @@ class TicketVerification(commands.Cog):
         ticket_id = sanitize_ticket_id(ticket_id)
 
         # Ensure ticket ID is valid
-        is_valid_ticket_id = ticket_id.isdigit() and len(ticket_id) == 10
-        if not is_valid_ticket_id:
+        if not ticket_id.isdigit() and len(ticket_id) == 10:
             await ctx.send(messages.INVALID_TICKET_ID_MESSAGE)
             logger.info(f"Member {ctx.author.name} ({ctx.author.id}) was denied a ticket."
                             " The ticket was not 10 digits long or it was non numeric.")
             return
         
-        # Ensure member has reacted to the CoC message
         async with db.get_session() as session:
             db_member, _ = await Member.get_or_create(id=ctx.author.id, session=session)
+            # Ensure member has reacted to the CoC message
             if not db_member.reacted:
-                await ctx.send(messages.COC_NOT_ACCEPTED_MESSAGE.format(link=config.COC_MESSAGE_LINK))
-                logger.info(f"Member {ctx.author.name} ({ctx.author.id}) was denied a ticket."
-                                " They did not react to the CoC message.")
-                return
-        
+                if not member_has_reacted(ctx.author, config.COC_CHANNEL_ID, config.COC_MESSAGE_ID):
+                    await ctx.send(messages.COC_NOT_ACCEPTED_MESSAGE.format(link=config.COC_MESSAGE_LINK))
+                    logger.info(f"Member {ctx.author.name} ({ctx.author.id}) was denied a ticket."
+                                    " They did not react to the CoC message.")
+                    return
+                else:
+                    db_member.reacted = True
+                    try:
+                        session.add(db_member)
+                        logger.info(f"Updated reacted=True for {ctx.author.name} ({ctx.author.id}) in database.")
+                    except Exception as e:
+                        logger.error(f"Error updating reacted for {ctx.author.name} ({ctx.author.id}): {e}")
+                        return
             # Organizers might be notified for the next ticket denies
             og_role = discord.utils.get(ctx.guild.roles, name=config.ORGANIZER_ROLE_NAME)
             if og_role is None:
