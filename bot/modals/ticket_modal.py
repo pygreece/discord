@@ -2,6 +2,8 @@ import logging
 
 import discord
 from discord import Interaction, ui, TextStyle
+from bot.validations.ticket_validation import validate_ticket
+from bot import messages
 
 logger = logging.getLogger(__name__)
 
@@ -15,11 +17,20 @@ class TicketModal(ui.Modal, title="Verify your Ticket"):
         max_length=10,
         custom_id="ticket_id"
     )
-    submitted_interaction: discord.Interaction | None = None
+    success = False
         
     async def on_submit(self, interaction: Interaction) -> None:
         ticket_id = self.input_ticket_id.value
         if not ticket_id.isdigit():
             await interaction.response.send_message("Invalid ticket ID. Wrong format.", ephemeral=True)
             return
+            
+        if not isinstance(interaction.user, discord.Member):
+            logger.info("Member missing, ignoring ticket claim.")
+            return
         
+        self.success = await validate_ticket(interaction.user, ticket_id)
+        if self.success:
+            await interaction.response.send_message(messages.TICKET_ACCEPTED_MESSAGE.format(name=interaction.user.mention), ephemeral=True)
+        else:
+            await interaction.response.send_message(messages.INVALID_TICKET_ID_MESSAGE, ephemeral=True, delete_after=10)

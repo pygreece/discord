@@ -37,22 +37,18 @@ class BaseView(discord.ui.View):
     async def _edit(self, **kwargs) -> None:
         """Edit the message this view is attached to."""
         if self.interaction is None and self.message is not None:
-            logger.info(f"View was never interacted with and the message before editing is {self.message} with content {self.message.content}")
             # If the view was never interacted with and the message attribute is not None, edit the message
             await self.message.edit(**kwargs)
-            logger.info(f"View was never interacted with and the message is {self.message} with content {self.message.content}.")
         elif self.interaction is not None:
             try:
                 # If the interaction has not yet been responded to, respond to it
                 await self.interaction.response.edit_message(**kwargs)
-                logger.info("Interaction not yet responded to.")
             except discord.InteractionResponded:
                 # If the interaction has already been responded to, edit the original response
-                await self.interaction.followup.send(**kwargs)
-                logger.info("Interaction already responded to.")
+                await self.interaction.edit_original_response(**kwargs)
                 
     async def on_error(self, interaction: discord.Interaction[discord.Client], error: Exception, item: discord.ui.Item[Any]) -> None:
-        message = f"A type ({type(error)}) occurred while processing this the interaction for {str(item)}: {error}"
+        message = f"A type ({type(error)}) occurred while processing interaction {interaction} for {str(item)}: {error}"
         logger.error(message)
         self._disable_all()
         await self._edit(content=message, view=self)

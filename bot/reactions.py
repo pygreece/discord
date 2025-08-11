@@ -3,7 +3,7 @@ from discord.utils import get as dget
 
 from bot.config import ACCEPTABLE_REACTION_EMOJIS
 
-async def member_has_reacted(member: discord.Member, channel_id: int, message_id: int) -> bool:
+async def member_has_reacted_to_msg(member: discord.Member, channel_id: int, message_id: int) -> bool:
     guild = member.guild
     if not guild:
         return False

@@ -9,7 +9,7 @@ from bot.views.ticket_view import TicketView
 from bot.senders import send_private_message_in_thread, delete_private_thread
 from bot.assign_role import assign_role
 from bot.sanitizers import sanitize_ticket_id
-from bot.reactions import member_has_reacted
+from bot.reactions import member_has_reacted_to_msg
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +45,11 @@ class TicketVerification(commands.Cog):
         """Called when a member reacts to the ticket message."""
 
         logger.info("Event on_member_reacted_to_ticket triggered.")
+
+        if config.TICKET_HOLDER_ROLE_NAME in [name for name in member.roles]:
+            logger.info(f"Member {member.name} ({member.id}) already has the {config.TICKET_HOLDER_ROLE_NAME} role, "
+                        "ignoring reaction to ticket message.")
+
         # Create the private thread
         await send_private_message_in_thread(
             config.TICKET_CHANNEL_ID,
@@ -98,7 +103,7 @@ class TicketVerification(commands.Cog):
         ticket_id = sanitize_ticket_id(ticket_id)
 
         # Ensure ticket ID is valid
-        if not ticket_id.isdigit() and len(ticket_id) == 10:
+        if not (ticket_id.isdigit() and len(ticket_id) == 10):
             await ctx.send(messages.INVALID_TICKET_ID_MESSAGE)
             logger.info(f"Member {ctx.author.name} ({ctx.author.id}) was denied a ticket."
                             " The ticket was not 10 digits long or it was non numeric.")
@@ -108,7 +113,7 @@ class TicketVerification(commands.Cog):
             db_member, _ = await Member.get_or_create(id=ctx.author.id, session=session)
             # Ensure member has reacted to the CoC message
             if not db_member.reacted:
-                if not member_has_reacted(ctx.author, config.COC_CHANNEL_ID, config.COC_MESSAGE_ID):
+                if not member_has_reacted_to_msg(ctx.author, config.COC_CHANNEL_ID, config.COC_MESSAGE_ID):
                     await ctx.send(messages.COC_NOT_ACCEPTED_MESSAGE.format(link=config.COC_MESSAGE_LINK))
                     logger.info(f"Member {ctx.author.name} ({ctx.author.id}) was denied a ticket."
                                     " They did not react to the CoC message.")
