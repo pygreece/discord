@@ -3,13 +3,11 @@ import logging
 import discord
 from discord.ext import commands
 
-from bot import config, db, messages
-from bot.models import Member, Ticket
+from bot import config, messages
 from bot.views.ticket_view import TicketView
 from bot.senders import send_private_message_in_thread, delete_private_thread
-from bot.assign_role import assign_role
+from bot.validations.ticket_validation import validate_ticket
 from bot.sanitizers import sanitize_ticket_id
-from bot.reactions import member_has_reacted_to_msg
 
 logger = logging.getLogger(__name__)
 
@@ -109,62 +107,8 @@ class TicketVerification(commands.Cog):
                             " The ticket was not 10 digits long or it was non numeric.")
             return
         
-        async with db.get_session() as session:
-            db_member, _ = await Member.get_or_create(id=ctx.author.id, session=session)
-            # Ensure member has reacted to the CoC message
-            if not db_member.reacted:
-                if not member_has_reacted_to_msg(ctx.author, config.COC_CHANNEL_ID, config.COC_MESSAGE_ID):
-                    await ctx.send(messages.COC_NOT_ACCEPTED_MESSAGE.format(link=config.COC_MESSAGE_LINK))
-                    logger.info(f"Member {ctx.author.name} ({ctx.author.id}) was denied a ticket."
-                                    " They did not react to the CoC message.")
-                    return
-                else:
-                    db_member.reacted = True
-                    try:
-                        session.add(db_member)
-                        logger.info(f"Updated reacted=True for {ctx.author.name} ({ctx.author.id}) in database.")
-                    except Exception as e:
-                        logger.error(f"Error updating reacted for {ctx.author.name} ({ctx.author.id}): {e}")
-                        return
-            # Organizers might be notified for the next ticket denies
-            og_role = discord.utils.get(ctx.guild.roles, name=config.ORGANIZER_ROLE_NAME)
-            if og_role is None:
-                logger.error("Organizer role not found.")
-                og_mention = config.ORGANIZER_ROLE_NAME
-            else:
-                og_mention = og_role.mention
-                
-            # Ensure ticket is in the database
-            db_ticket = await Ticket.get_by_id(id=int(ticket_id), session=session)
-            if db_ticket is None:
-                await ctx.send(messages.TICKET_NOT_FOUND_IN_DATABASE_MESSAGE.format(role=og_mention))
-                logger.info(f"Member {ctx.author.name} ({ctx.author.id}) was denied a ticket."
-                                " The ticket was not found in the database.")
-                return
-            if db_ticket.member_id is not None and db_ticket.member_id != db_member.id:
-                await ctx.send(messages.TICKET_IN_USE_MESSAGE.format(role=og_mention))
-                logger.warning(f"Member {ctx.author.name} ({ctx.author.id}) was denied a ticket."
-                                " The ticket was already claimed.")
-                return
-            elif db_ticket.member_id is not None and db_ticket.member_id == db_member.id:
-                await ctx.send(messages.TICKET_DOUBLE_CLAIM_MESSAGE)
-                logger.warning(f"Member {ctx.author.name} ({ctx.author.id}) was denied a ticket."
-                                " They already claimed this ticket.")
-                return
-            
-            # Claim the ticket
-            db_ticket.member_id = db_member.id
-            try:
-                session.add(db_ticket)
-                logger.info(f"Ticket {ticket_id} claimed by {ctx.author.name} ({ctx.author.id}) in database.")
-            except Exception as e:
-                await ctx.send(messages.TICKET_DB_ERROR_MESSAGE.format(role=og_mention))
-                logger.error(f"Error updating member_id for ticket {ticket_id}: {e}")
-                return
-        
-        if await assign_role(ctx.author, config.TICKET_HOLDER_ROLE_NAME):
-            logger.info(f"Assigned '{config.TICKET_HOLDER_ROLE_NAME}' role to {ctx.author} ({ctx.author.id}).")
+        ticket_validated = validate_ticket(ctx.author, ticket_id)
+        if ticket_validated:
             await ctx.send(messages.TICKET_ACCEPTED_MESSAGE.format(name=ctx.author.mention))
         else:
-            logger.error(f"Failed to assign '{config.TICKET_HOLDER_ROLE_NAME}' role to {ctx.author} ({ctx.author.id}).")
-            await ctx.send(messages.TICKET_ROLE_ASSIGNMENT_ERROR.format(role=og_mention))
+            await ctx.send(messages.INVALID_TICKET_ID_MESSAGE, ephemeral=True, delete_after=10)

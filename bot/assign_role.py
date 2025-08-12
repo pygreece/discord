@@ -9,13 +9,10 @@ logger = logging.getLogger(__name__)
 async def assign_role(member: discord.Member, role_name: str) -> bool:
     """Assigns a role to the member if they don't already have it. Returns whether the role was assigned.
 
-    Args:
-        member (discord.Member): The member to assign the role to.
-        role_name (str): The name of the role to assign.
+    :param discord.Member member: The member to assign the role to.
+    :param str role_name: The name of the role to assign.
 
-    Returns:
-        bool: True if the role was assigned, False otherwise.
-
+    :returns bool: True if the role was assigned, False otherwise.
     """
 
     # Assign the "role_name" role

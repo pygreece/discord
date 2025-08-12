@@ -39,8 +39,6 @@ class Utility(commands.Cog):
             self.bot.dispatch("member_reacted_to_coc", member=payload.member)
         elif payload.message_id == TICKET_MESSAGE_ID:
             self.bot.dispatch("member_reacted_to_ticket", member=payload.member)
-        else:
-            logger.info("The message ID was irrelevant.")
     
     @commands.command()
     @commands.guild_only()
