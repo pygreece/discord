@@ -37,7 +37,7 @@ MEMBER_ROLE_NAME = get_env_var("MEMBER_ROLE_NAME", "members")
 COC_MESSAGE_LINK = get_env_var("COC_MESSAGE_LINK")
 COC_MESSAGE_ID = int(COC_MESSAGE_LINK.split("/")[-1])
 COC_CHANNEL_ID = int(COC_MESSAGE_LINK.split("/")[-2])
-COC_THREAD_PREFIX = get_env_var("WELCOME_CHANNEL_PREFIX", "welcome")
+COC_THREAD_PREFIX = get_env_var("COC_THREAD_PREFIX", "welcome")
 
 TICKET_HOLDER_ROLE_NAME = get_env_var("TICKET_HOLDER_ROLE_NAME", "ticketholders")
 TICKET_MESSAGE_LINK = get_env_var("TICKET_MESSAGE_LINK")
