@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 class Utility(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
+        """Called when the bot is initialized."""
         self.bot = bot
         self.start_time = datetime.datetime.now(datetime.timezone.utc)
 

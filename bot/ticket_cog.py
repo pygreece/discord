@@ -21,7 +21,7 @@ class TicketVerification(commands.Cog):
     """
     
     def __init__(self, bot: commands.Bot) -> None:
-        """Initialize the cog with the bot instance."""
+        """Called when the cog is initialized."""
         self.bot = bot
 
     @commands.Cog.listener()
@@ -47,7 +47,9 @@ class TicketVerification(commands.Cog):
         if config.TICKET_HOLDER_ROLE_NAME in [name for name in member.roles]:
             logger.info(f"Member {member.name} ({member.id}) already has the {config.TICKET_HOLDER_ROLE_NAME} role, "
                         "ignoring reaction to ticket message.")
-
+            return
+        
+        
         # Create the private thread
         await send_private_message_in_thread(
             config.TICKET_CHANNEL_ID,

@@ -1,6 +1,7 @@
 import logging
 
 import discord
+from bot.config import TICKET_MESSAGE_EXPIRES_AFTER
 from bot.views.base_view import BaseView
 from bot.modals.ticket_modal import TicketModal
 
@@ -8,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 class TicketView(BaseView):
     def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs, timeout=300) # 5 minutes timeout
+        super().__init__(*args, **kwargs, timeout=TICKET_MESSAGE_EXPIRES_AFTER) # 5 minutes timeout
 
     @discord.ui.button(
         label="Επικύρωσε το εισιτήριό σου! | Claim your ticket!", 
