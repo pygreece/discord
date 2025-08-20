@@ -36,7 +36,7 @@ MEMBER_ROLE_NAME = get_env_var("MEMBER_ROLE_NAME", "members")
 COC_MESSAGE_LINK = get_env_var("COC_MESSAGE_LINK")
 COC_MESSAGE_ID = int(COC_MESSAGE_LINK.split("/")[-1])
 COC_CHANNEL_ID = int(COC_MESSAGE_LINK.split("/")[-2])
-COC_THREAD_PREFIX = get_env_var("WELCOME_CHANNEL_PREFIX", "welcome")
+COC_THREAD_PREFIX = get_env_var("COC_THREAD_PREFIX", "welcome")
 ACCEPTABLE_REACTION_EMOJIS = [
     "👍",  # Thumbs up - approval
     "❤️",  # Heart - love and affection
