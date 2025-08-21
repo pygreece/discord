@@ -48,7 +48,7 @@ async def send_private_message_in_thread(
         await thread.add_user(member)
         
     if view:
-        await thread.send(view=view, content=content)
+        view.message = await thread.send(view=view, content=content)
     else:
         await thread.send(content=content)
     logger.info(
