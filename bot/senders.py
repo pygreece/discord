@@ -38,6 +38,7 @@ async def send_private_message_in_thread(
             name=f"{thread_prefix}-{member_name}",
             reason=reason,
             type=discord.ChannelType.private_thread,
+            auto_archive_duration=60,  # Archive after 60 minutes of inactivity
             invitable=False,
         )
     if not thread:
