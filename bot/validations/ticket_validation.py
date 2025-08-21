@@ -1,24 +1,26 @@
 import logging
 
 import discord
-from bot import db, config
+
+from bot import config, db
 from bot.models import Member, Ticket
-from bot.roles import assign_role
 from bot.reactions import member_has_reacted_to_msg
+from bot.roles import assign_role
 
 logger = logging.getLogger(__name__)
 
+
 async def validate_ticket(member: discord.Member, ticket_id: str) -> bool:
-    """This function checks if a given ticket ID is valid and unclaimed, and if the member 
-    has accepted the Code of Conduct. If all conditions are met, the ticket is claimed 
+    """This function checks if a given ticket ID is valid and unclaimed, and if the member
+    has accepted the Code of Conduct. If all conditions are met, the ticket is claimed
     for the member, and they are assigned the ticket holder role.
 
     :param discord.Member member: The member attempting to claim the ticket.
     :param int ticket_id: The ID of the ticket being claimed.
-    
+
     :param bool returns: True if the ticket was successfully claimed, False otherwise.
     """
-    
+
     # Ensure a ticket ID was given
     if not ticket_id:
         logger.info("Ticket ID was not given.")
@@ -35,7 +37,9 @@ async def validate_ticket(member: discord.Member, ticket_id: str) -> bool:
             async with db.get_session() as session:
                 try:
                     session.add(db_member)
-                    logger.info(f"Updated reacted=True for {member.name} ({member.id}) in database.")
+                    logger.info(
+                        f"Updated reacted=True for {member.name} ({member.id}) in database."
+                    )
                 except Exception as e:
                     logger.error(f"Error updating reacted for {member.name} ({member.id}): {e}")
                     return False
@@ -49,13 +53,17 @@ async def validate_ticket(member: discord.Member, ticket_id: str) -> bool:
 
     # Ensure ticket is not claimed
     if db_ticket.member_id and db_ticket.member_id != db_member.id:
-        logger.warning(f"Member {member.name} ({member.id}) was denied a ticket."
-                        " The ticket was already claimed.")
+        logger.warning(
+            f"Member {member.name} ({member.id}) was denied a ticket."
+            " The ticket was already claimed."
+        )
         return False
-        
+
     elif db_ticket.member_id and db_ticket.member_id == db_member.id:
-        logger.warning(f"Member {member.name} ({member.id}) was denied a ticket."
-                        " They already claimed this ticket.")
+        logger.warning(
+            f"Member {member.name} ({member.id}) was denied a ticket."
+            " They already claimed this ticket."
+        )
         return False
 
     # Claim the ticket

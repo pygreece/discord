@@ -4,8 +4,8 @@ import discord
 from discord.ext import commands
 
 from bot import config, db, messages
-from bot.roles import assign_role
 from bot.models import Member
+from bot.roles import assign_role
 from bot.senders import delete_private_thread, send_private_message_in_thread
 
 logger = logging.getLogger(__name__)
@@ -100,7 +100,7 @@ class WelcomeAndCoC(commands.Cog):
         """
 
         logger.info("Event on_member_reacted_to_coc triggered.")
-        
+
         if not await assign_role(member, config.MEMBER_ROLE_NAME):
             return
 
@@ -117,9 +117,9 @@ class WelcomeAndCoC(commands.Cog):
             except Exception as e:
                 logger.error(f"Error updating reacted for {member.name} ({member.id}): {e}")
                 return
-            
+
         self.bot.dispatch("new_member_reacted_to_coc", member)
-        
+
         await delete_private_thread(
             config.COC_CHANNEL_ID,
             config.COC_THREAD_PREFIX,

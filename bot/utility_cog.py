@@ -4,10 +4,15 @@ import logging
 import discord
 from discord.ext import commands
 from sqlalchemy import select
-from bot.config import COC_MESSAGE_ID, TICKET_MESSAGE_ID, ACCEPTABLE_REACTION_EMOJIS, ORGANIZER_ROLE_NAME
-from bot.utility_tasks import AntiSpamTask
 
 from bot import db
+from bot.config import (
+    ACCEPTABLE_REACTION_EMOJIS,
+    COC_MESSAGE_ID,
+    ORGANIZER_ROLE_NAME,
+    TICKET_MESSAGE_ID,
+)
+from bot.utility_tasks import AntiSpamTask
 
 logger = logging.getLogger(__name__)
 
@@ -19,19 +24,17 @@ class Utility(commands.Cog):
         self.start_time = datetime.datetime.now(datetime.timezone.utc)
         self.anti_spam_task = AntiSpamTask(bot)
 
-
     @commands.Cog.listener()
     async def on_ready(self) -> None:
         """Called when the bot is ready."""
         logger.info("PyGreece bot is now logged in")
 
-
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
         """Handles members' reactions to messages."""
-        
+
         logger.info("Event on_raw_reaction_add triggered.")
-        
+
         if not payload.member or payload.member.bot:
             logger.info("Member not found or it is a bot.")
             return
@@ -41,7 +44,7 @@ class Utility(commands.Cog):
         if payload.emoji.name not in ACCEPTABLE_REACTION_EMOJIS:
             logger.info("The reaction emoji is not in the acceptable list.")
             return
-        
+
         if payload.message_id == COC_MESSAGE_ID:
             self.bot.dispatch("member_reacted_to_coc", member=payload.member)
         elif payload.message_id == TICKET_MESSAGE_ID:
@@ -49,9 +52,9 @@ class Utility(commands.Cog):
         else:
             logger.info(f"Reaction on message {payload.message_id} not handled by this cog.")
             return
-        
+
         self.anti_spam_task.record_reactor(payload.message_id, payload.user_id)
-    
+
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(administrator=True)

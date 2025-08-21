@@ -45,7 +45,9 @@ TICKET_MESSAGE_LINK = get_env_var("TICKET_MESSAGE_LINK")
 TICKET_MESSAGE_ID = int(TICKET_MESSAGE_LINK.split("/")[-1])
 TICKET_CHANNEL_ID = int(TICKET_MESSAGE_LINK.split("/")[-2])
 TICKET_THREAD_PREFIX = get_env_var("TICKET_CHANNEL_PREFIX", "ticket-verification")
-TICKET_MESSAGE_EXPIRES_AFTER = get_env_var_int("TICKET_EXPIRES_AFTER", 5 * 60)  # Default to 5 minutes
+TICKET_MESSAGE_EXPIRES_AFTER = get_env_var_int(
+    "TICKET_EXPIRES_AFTER", 5 * 60
+)  # Default to 5 minutes
 
 ACCEPTABLE_REACTION_EMOJIS = [
     "👍",  # Thumbs up - approval

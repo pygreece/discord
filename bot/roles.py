@@ -37,6 +37,7 @@ async def assign_role(member: discord.Member, role_name: str) -> bool:
         logger.error(f"Failed to assign '{role.name}' role to {member.name} ({member.id}): {e}")
     return False
 
+
 def has_role(member: discord.Member, role_name: str) -> bool:
     """Checks if the member has a specific role.
 

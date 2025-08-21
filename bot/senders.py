@@ -10,7 +10,12 @@ logger = logging.getLogger(__name__)
 
 
 async def send_private_message_in_thread(
-    channel_id: int, thread_prefix: str, member: discord.Member, content: str, reason: str, view: BaseView | None = None
+    channel_id: int,
+    thread_prefix: str,
+    member: discord.Member,
+    content: str,
+    reason: str,
+    view: BaseView | None = None,
 ) -> None:
     """Creates a private thread, adds the member to it and sends a message inside it.
 
@@ -31,9 +36,9 @@ async def send_private_message_in_thread(
         return
 
     member_name = sanitize_user_name(member.name, member.id)
-    
+
     thread = dget(channel.threads, name=f"{thread_prefix}-{member_name}")
-    if not thread:    
+    if not thread:
         thread = await channel.create_thread(
             name=f"{thread_prefix}-{member_name}",
             reason=reason,
@@ -47,7 +52,7 @@ async def send_private_message_in_thread(
 
     if member not in thread.members:
         await thread.add_user(member)
-        
+
     if view:
         view.message = await thread.send(view=view, content=content)
     else:
@@ -56,11 +61,12 @@ async def send_private_message_in_thread(
         f"Sent private message{' with view' if view else ''} in thread for {member.name} ({member.id}) because {reason}."
     )
 
+
 async def delete_private_thread(
     channel_id: int, thread_prefix: str, member: discord.Member, reason: str
 ) -> None:
     """Deletes a private thread.
-    
+
     :param int channel_id: The ID of the channel containing the thread.
     :param str thread_prefix: The prefix for the thread name.
     :param discord.Member member: The member for which this thread was created.

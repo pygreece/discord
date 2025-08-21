@@ -12,9 +12,11 @@ def sanitize_user_name(name: str, id: int) -> str:
     match = regex_match(
         # Just in case
         # https://stackoverflow.com/questions/77577487/regex-expression-for-a-discord-username
-        r"^(?=.{2,32}$)(?!(?:everyone|here)$)\.?[a-z0-9_]+(?:\.[a-z0-9_]+)*\.?$", name
+        r"^(?=.{2,32}$)(?!(?:everyone|here)$)\.?[a-z0-9_]+(?:\.[a-z0-9_]+)*\.?$",
+        name,
     )
     return match.group().lower() if match else str(id)[:10]
+
 
 def sanitize_ticket_id(ticket_id: str) -> str:
     """Removes the hashtag and/or whitespace from the ticket ID.
@@ -26,6 +28,7 @@ def sanitize_ticket_id(ticket_id: str) -> str:
     match = regex_match(
         # Just in case
         # https://stackoverflow.com/questions/4685500/regular-expression-for-10-digit-number-without-any-special-characters
-        r"(?<!\d)\d{10}(?!\d)", ticket_id 
+        r"(?<!\d)\d{10}(?!\d)",
+        ticket_id,
     )
     return match.group().lower() if match else ""

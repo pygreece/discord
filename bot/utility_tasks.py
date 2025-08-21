@@ -1,9 +1,12 @@
 import logging
 from datetime import datetime, timedelta, timezone
+
 from discord.ext import tasks
+
 from bot.config import SPAM_COOLDOWN
 
 logger = logging.getLogger(__name__)
+
 
 class AntiSpamTask:
     def __init__(self, bot, expiry_seconds=SPAM_COOLDOWN) -> None:
@@ -17,7 +20,9 @@ class AntiSpamTask:
         if message_id not in self.recent_reactors:
             self.recent_reactors[message_id] = {}
         self.recent_reactors[message_id][user_id] = datetime.now(timezone.utc)
-        logger.info(f"Recorded reactor for message {message_id}, user {user_id} at {self.recent_reactors[message_id][user_id]}")
+        logger.info(
+            f"Recorded reactor for message {message_id}, user {user_id} at {self.recent_reactors[message_id][user_id]}"
+        )
 
     def is_on_cooldown(self, message_id: int, user_id: int) -> bool:
         """Check if the user is still on cooldown for a specific message."""
@@ -32,7 +37,8 @@ class AntiSpamTask:
         now = datetime.now(timezone.utc)
         for message_id in list(self.recent_reactors.keys()):
             self.recent_reactors[message_id] = {
-                user_id: timestamp for user_id, timestamp in self.recent_reactors[message_id].items() 
+                user_id: timestamp
+                for user_id, timestamp in self.recent_reactors[message_id].items()
                 if (now - timestamp) < self.expiry_time
             }
             # Remove the message_id dict if no users are left

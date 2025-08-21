@@ -25,7 +25,7 @@ ALREADY_EXISTS_MESSAGE = (
 
 ### Ticket messages
 NEW_MEMBER_TICKET_MESSAGE = (
-    "Είσαι επίσημα μέλος {name}! Μήπως έχεις και εισιτήριο για το pycon Greece 2025; Στείλε στο τσατ !ticket " 
+    "Είσαι επίσημα μέλος {name}! Μήπως έχεις και εισιτήριο για το pycon Greece 2025; Στείλε στο τσατ !ticket "
     "κενό και τον αριθμό του εισιτήριου σου για να αποκτήσεις πρόσβαση στα κανάλια της "
     "εκδήλωσης! 😊\n\n"
     "---\n\n"
@@ -34,7 +34,7 @@ NEW_MEMBER_TICKET_MESSAGE = (
 )
 
 ASK_FOR_TICKET_MESSAGE = (
-    "Γειά σου {name}, έχεις εισιτήριο για το pycon Greece 2025; Στείλε στο τσατ !ticket " 
+    "Γειά σου {name}, έχεις εισιτήριο για το pycon Greece 2025; Στείλε στο τσατ !ticket "
     "κενό και τον αριθμό του εισιτήριου σου για να αποκτήσεις πρόσβαση στα κανάλια της "
     "εκδήλωσης! 😊\n\n"
     "---\n\n"
@@ -48,7 +48,7 @@ INVALID_THREAD_MESSAGE = (
     "---\n\n"
     "This command can only be used in the user's thread in the ticket channel. "
     "Please react to the [ticket message]({link}) if the thread is missing. "
-    )
+)
 
 TICKET_ID_MISSING_MESSAGE = (
     "Παρακαλώ συμπερέλαβε τον αριθμό του εισιτηρίου μετά το !ticket.\n\n"
@@ -63,9 +63,7 @@ INVALID_TICKET_ID_MESSAGE = (
 )
 
 TICKET_MEMBER_ALREADY_CLAIMED_MESSAGE = (
-    "Έχεις ήδη επικυρώσει ένα εισιτήριο! 😊\n\n"
-    "---\n\n"
-    "You have already claimed a ticket! 😊\n\n"
+    "Έχεις ήδη επικυρώσει ένα εισιτήριο! 😊\n\n---\n\nYou have already claimed a ticket! 😊\n\n"
 )
 
 COC_NOT_ACCEPTED_MESSAGE = (
@@ -92,10 +90,8 @@ TICKET_IN_USE_MESSAGE = (
     "The {role} team will contact you soon to resolve the issue! "
 )
 
-TICKET_DOUBLE_CLAIM_MESSAGE= (
-    "Έχεις ήδη επικυρώσει αυτό το εισητήριο.\n\n"
-    "---\n\n"
-    "You have already claimed this ticket. "
+TICKET_DOUBLE_CLAIM_MESSAGE = (
+    "Έχεις ήδη επικυρώσει αυτό το εισητήριο.\n\n---\n\nYou have already claimed this ticket. "
 )
 
 TICKET_DB_ERROR_MESSAGE = (

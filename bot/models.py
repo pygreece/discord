@@ -38,6 +38,7 @@ class Member(Base):
         await session.refresh(new_instance)
         return new_instance, True
 
+
 class Ticket(Base):
     __tablename__ = "tickets"
 

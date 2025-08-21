@@ -3,7 +3,7 @@ import asyncio
 import discord
 from discord.ext import commands
 
-from bot import config, utility_cog, welcome_and_coc_cog, ticket_cog
+from bot import config, ticket_cog, utility_cog, welcome_and_coc_cog
 
 
 async def main() -> None:
