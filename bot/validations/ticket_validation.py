@@ -3,7 +3,7 @@ import logging
 import discord
 from bot import db, config
 from bot.models import Member, Ticket
-from bot.assign_role import assign_role
+from bot.roles import assign_role
 from bot.reactions import member_has_reacted_to_msg
 
 logger = logging.getLogger(__name__)

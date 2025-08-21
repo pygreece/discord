@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 
 from bot import config, db, messages
-from bot.assign_role import assign_role
+from bot.roles import assign_role
 from bot.models import Member
 from bot.senders import delete_private_thread, send_private_message_in_thread
 

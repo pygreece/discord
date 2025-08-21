@@ -5,6 +5,7 @@ from discord.ext import commands
 
 from bot import config, messages
 from bot.views.ticket_view import TicketView
+from bot.roles import has_role
 from bot.senders import send_private_message_in_thread, delete_private_thread
 from bot.validations.ticket_validation import validate_ticket
 from bot.sanitizers import sanitize_ticket_id
@@ -44,11 +45,9 @@ class TicketVerification(commands.Cog):
 
         logger.info("Event on_member_reacted_to_ticket triggered.")
 
-        if config.TICKET_HOLDER_ROLE_NAME in [name for name in member.roles]:
-            logger.info(f"Member {member.name} ({member.id}) already has the {config.TICKET_HOLDER_ROLE_NAME} role, "
-                        "ignoring reaction to ticket message.")
+        if has_role(member, config.TICKET_HOLDER_ROLE_NAME):
+            logger.info(f"Member {member.name} ({member.id}) already has the {config.TICKET_HOLDER_ROLE_NAME} role.")
             return
-        
         
         # Create the private thread
         await send_private_message_in_thread(

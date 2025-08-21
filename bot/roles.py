@@ -36,3 +36,14 @@ async def assign_role(member: discord.Member, role_name: str) -> bool:
     except discord.HTTPException as e:
         logger.error(f"Failed to assign '{role.name}' role to {member.name} ({member.id}): {e}")
     return False
+
+def has_role(member: discord.Member, role_name: str) -> bool:
+    """Checks if the member has a specific role.
+
+    :param discord.Member member: The member to check.
+    :param str role_name: The name of the role to check for.
+
+    :returns bool: True if the member has the role, False otherwise.
+    """
+    role = dget(member.roles, name=role_name)
+    return role is not None
