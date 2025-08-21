@@ -1,12 +1,12 @@
 import logging
 from datetime import datetime, timedelta, timezone
 from discord.ext import tasks
-from bot.config import TICKET_MESSAGE_EXPIRES_AFTER
+from bot.config import SPAM_COOLDOWN
 
 logger = logging.getLogger(__name__)
 
 class AntiSpamTask:
-    def __init__(self, bot, expiry_seconds=TICKET_MESSAGE_EXPIRES_AFTER):
+    def __init__(self, bot, expiry_seconds=SPAM_COOLDOWN) -> None:
         self.bot = bot
         self.recent_reactors = {}  # {message_id: {user_id: timestamp}}
         self.expiry_time = timedelta(seconds=expiry_seconds)

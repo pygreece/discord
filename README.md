@@ -38,10 +38,11 @@ A Discord bot for the PyGreece online community that handles member onboarding t
 
 Copy `.env.sample` to a new file called `.env` and update the placeholder values:
    ```dosini
-   DISCORD_TOKEN=<your-discord-bot-token>
+DISCORD_TOKEN=<your-discord-bot-token>
 DISCORD_GUILD=<your-discord-server-name>
 ORGANIZER_ROLE_NAME=organizers
 DATABASE_URL=postgresql+asyncpg://<username>:<password>@postgres/<db>
+SPAM_COOLDOWN=<spam-cooldown-time-in-seconds>
 
 MEMBER_ROLE_NAME=members
 COC_MESSAGE_LINK=<message-link-of-code-of-conduct>
@@ -50,6 +51,7 @@ COC_THREAD_PREFIX=welcome
 TICKET_HOLDER_ROLE_NAME=ticketholders
 TICKET_MESSAGE_LINK=<message-link-of-ticket-message>
 TICKET_THREAD_PREFIX=ticket
+TICKET_MESSAGE_EXPIRES_AFTER=<expiration-time-in-seconds>
    ```
 
 > Use `compose.yml` to set DB credentials
@@ -87,16 +89,18 @@ docker-compose up -d
     - `ticket_validation.py`: Ticket validation logic
   - `views/`: UI views
     - `ticket_view.py`: Ticket validation UI view
-  - `assign_role.py`: Assigns a role to a member
   - `config.py`: Configuration handling
   - `db.py`: Database connection management
   - `exceptions.py`: Custom exceptions
   - `messages.py`: Messages sent to members based on actions
   - `models.py`: Database models
+  - `reactions.py`: Reaction related functions
+  - `roles.py`: Role related functions
   - `sanitizers.py`: String sanitizers
   - `senders.py`: Sends dms, creates private categories and channels if dms are closed
   - `ticket_cog.py`: Ticket verification system
   - `utility_cog.py`: Administration commands - main cog
+  - `utility_tasks.py`: Background tasks
   - `welcome_and_coc_cog.py`: Actions related to new members joining
 - `tests/`: Test suite
 - `alembic/`: Database migrations

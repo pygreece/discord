@@ -32,6 +32,7 @@ DISCORD_TOKEN = get_env_var("DISCORD_TOKEN")
 DISCORD_GUILD = get_env_var("DISCORD_GUILD")
 ORGANIZER_ROLE_NAME = get_env_var("ORGANIZER_ROLE_NAME", "organizers")
 DATABASE_URL = get_env_var("DATABASE_URL")
+SPAM_COOLDOWN = get_env_var_int("SPAM_COOLDOWN", 5 * 60)  # Default to 5 minutes
 
 MEMBER_ROLE_NAME = get_env_var("MEMBER_ROLE_NAME", "members")
 COC_MESSAGE_LINK = get_env_var("COC_MESSAGE_LINK")
