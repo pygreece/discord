@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 from sqlalchemy import select
 from bot.config import COC_MESSAGE_ID, TICKET_MESSAGE_ID, ACCEPTABLE_REACTION_EMOJIS, ORGANIZER_ROLE_NAME
+from bot.utility_tasks import AntiSpamTask
 
 from bot import db
 
@@ -16,6 +17,7 @@ class Utility(commands.Cog):
         """Called when the bot is initialized."""
         self.bot = bot
         self.start_time = datetime.datetime.now(datetime.timezone.utc)
+        self.anti_spam_task = AntiSpamTask(bot)
 
 
     @commands.Cog.listener()
@@ -28,18 +30,27 @@ class Utility(commands.Cog):
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent) -> None:
         """Handles members' reactions to messages."""
         
+        logger.info("Event on_raw_reaction_add triggered.")
+        
         if not payload.member or payload.member.bot:
             logger.info("Member not found or it is a bot.")
             return
-        
-        logger.info("Event on_raw_reaction_add triggered.")
-        
+        if self.anti_spam_task.is_on_cooldown(payload.message_id, payload.user_id):
+            logger.info("User is on cooldown.")
+            return
         if payload.emoji.name not in ACCEPTABLE_REACTION_EMOJIS:
             logger.info("The reaction emoji is not in the acceptable list.")
-        elif payload.message_id == COC_MESSAGE_ID:
+            return
+        
+        if payload.message_id == COC_MESSAGE_ID:
             self.bot.dispatch("member_reacted_to_coc", member=payload.member)
         elif payload.message_id == TICKET_MESSAGE_ID:
             self.bot.dispatch("member_reacted_to_ticket", member=payload.member)
+        else:
+            logger.info(f"Reaction on message {payload.message_id} not handled by this cog.")
+            return
+        
+        self.anti_spam_task.record_reactor(payload.message_id, payload.user_id)
     
     @commands.command()
     @commands.guild_only()
