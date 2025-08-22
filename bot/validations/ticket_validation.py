@@ -32,7 +32,7 @@ async def validate_ticket(member: discord.Member, ticket_id: str) -> bool:
 
     # Ensure member has reacted to the CoC message
     if not db_member.reacted:
-        if member_has_reacted_to_msg(member, config.COC_CHANNEL_ID, config.COC_MESSAGE_ID):
+        if await member_has_reacted_to_msg(member, config.COC_CHANNEL_ID, config.COC_MESSAGE_ID):
             db_member.reacted = True
             async with db.get_session() as session:
                 try:
