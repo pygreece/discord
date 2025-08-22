@@ -28,8 +28,8 @@ A Discord bot for the PyGreece online community that handles member onboarding t
 4. Enable the "Server Members Intent" and "Message Content Intent" under Privileged Gateway Intents
 5. Save the bot token for configuration
 6. Go to the "Installation" tab and choose the "bot" option on the applications.commands dropdown for Guild Install
-7. Select "Manage Roles" from permissions
-8. Copy and paste the install link into your browser and invite the bot your server
+7. Select "Manage Channels", "Manage Messages", "Manage Roles", "Manage Threads", "Send Messages", "Send Messages in Threads", from permissions
+8. Copy and paste the install link into your browser and invite the bot to your server
 9. Ensure the bot role is above the members role in the role hierarchy
 
 > This bot is used as a public bot in a Guild Install, private bot mode and user install will need testing
@@ -37,13 +37,14 @@ A Discord bot for the PyGreece online community that handles member onboarding t
 ### Environment Configuration
 
 Copy `.env.sample` to a new file called `.env` and update the placeholder values:
-   ```
+   ```dosini
    DISCORD_TOKEN=<your-discord-bot-token>
    DISCORD_GUILD=<your-discord-server-name>
    DATABASE_URL=postgresql+asyncpg://<username>:<password>@postgres/<db>
+
    MEMBER_ROLE_NAME=members
-   COC_MESSAGE_ID=<message-id-of-code-of-conduct>
    COC_MESSAGE_LINK=<message-link-of-code-of-conduct>
+   COC_THREAD_PREFIX=welcome
    ```
 
 > Use `compose.yml` to set DB credentials
@@ -75,11 +76,16 @@ docker-compose up -d
 
 - `bot/`: Main bot code
   - `__main__.py`: Entry point
-  - `cog.py`: Core bot functionality
-  - `models.py`: Database models
-  - `db.py`: Database connection management
+  - `assign_role.py`: Assigns a role to a member
   - `config.py`: Configuration handling
+  - `db.py`: Database connection management
   - `exceptions.py`: Custom exceptions
+  - `messages.py`: Messages sent to members based on actions
+  - `models.py`: Database models
+  - `sanitizers.py`: Prevents invalid channel names
+  - `senders.py`: Sends dms, creates private categories and channels if dms are closed
+  - `utility_cog.py`: Administration commands
+  - `welcome_and_coc_cog.py`: Actions related to new members joining
 - `tests/`: Test suite
 - `alembic/`: Database migrations
 
