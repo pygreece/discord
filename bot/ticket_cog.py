@@ -74,7 +74,7 @@ class TicketVerification(commands.Cog):
 
     @commands.hybrid_command()
     @commands.guild_only()
-    @commands.has_role("members")
+    @commands.has_role(config.MEMBER_ROLE_NAME)
     async def ticket(self, ctx: commands.Context[commands.Bot], ticket_id: str = "") -> None:
         """Allows members to claim tickets by typing !ticket <ticket_id>."""
 
