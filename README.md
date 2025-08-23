@@ -85,16 +85,18 @@ docker-compose up -d
   - `__main__.py`: Entry point
   - `modals/`: UI input forms
     - `ticket_modal.py`: Ticket verification UI input form
-  - `validations/`: Validations that write to db
-    - `ticket_validation.py`: Ticket validation logic
+  - `services/`: Database insert logic
+    - `ticket_services.py`: Ticket db insert logic
+  - `validations/`: Validations checks
+    - `ticket_validation.py`: Ticket validation check
   - `views/`: UI views
+    - `base_view.py`: Base UI view with boilerplate logic
     - `ticket_view.py`: Ticket validation UI view
   - `config.py`: Configuration handling
   - `db.py`: Database connection management
   - `exceptions.py`: Custom exceptions
-  - `messages.py`: Messages sent to members based on actions
+  - `messages.py`: Messages sent to members based on interactions
   - `models.py`: Database models
-  - `reactions.py`: Reaction related functions
   - `roles.py`: Role related functions
   - `sanitizers.py`: String sanitizers
   - `senders.py`: Sends dms, creates private categories and channels if dms are closed

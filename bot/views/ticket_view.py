@@ -39,9 +39,9 @@ class TicketView(BaseView):
 
     async def on_timeout(self) -> None:
         btn = self.children[0]
-        if isinstance(btn, discord.ui.Button):
+        if isinstance(btn, discord.ui.Button) and not btn.disabled:
             btn.label = "Η επικύρωση απέτυχε! | Claim Failed!"
             btn.style = discord.ButtonStyle.danger
             btn.emoji = discord.PartialEmoji(name="❌")
-        await self._edit(view=self, content=TICKET_FAILED_MESSAGE.format(link=TICKET_MESSAGE_LINK))
+            await self._edit(view=self, content=TICKET_FAILED_MESSAGE.format(link=TICKET_MESSAGE_LINK))
         await super().on_timeout()
