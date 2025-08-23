@@ -42,21 +42,22 @@ ASK_FOR_TICKET_MESSAGE = (
     "and your ticket number to get access to the channels of the event! 😊 "
 )
 
-INVALID_THREAD_MESSAGE = (
+### Ticket Errors
+TICKET_INVALID_THREAD_MESSAGE = (
     "Αυτή η εντολή μπορεί να χρησιμοποιηθεί μόνο στο προσωπικό σου νήμα στο κανάλι για τα εισιτήρια. "
-    "Παρακαλώ αντίδρασε με ένα thumbs-up (👍) στο [μήνυμα για τα εισιτήρια]({link}).\n\n"
+    "Αν δεν υπάρχει νήμα τότε αντίδρασε με ένα thumbs-up (👍) στο [μήνυμα για τα εισιτήρια]({link}).\n\n"
     "---\n\n"
     "This command can only be used in the user's thread in the ticket channel. "
-    "Please react to the [ticket message]({link}) if the thread is missing. "
+    "Please react to the [ticket message]({link}) with a thumbs-up (👍) if the thread is missing. "
 )
 
 TICKET_ID_MISSING_MESSAGE = (
-    "Παρακαλώ συμπερέλαβε τον αριθμό του εισιτηρίου μετά το !ticket.\n\n"
+    "Παρακαλώ συμπερίλαβε τον αριθμό του εισιτηρίου μετά το !ticket.\n\n"
     "---\n\n"
     "Please provide a ticket ID after !ticket. "
 )
 
-INVALID_TICKET_ID_MESSAGE = (
+TICKET_INVALID_ID_MESSAGE = (
     "Λάθος αριθμός εισιτηρίου, παρακαλώ ξαναπροσπάθησε.\n\n"
     "---\n\n"
     "Invalid ticket ID, please try again. "
@@ -74,30 +75,40 @@ COC_NOT_ACCEPTED_MESSAGE = (
     "please react with a thumbs-up (👍) on the [message]({link}). "
 )
 
-TICKET_NOT_FOUND_IN_DATABASE_MESSAGE = (
-    "Το εισιτήριό σου δεν υπάρχει στη βάση μας! :'(\n"
-    "Αν κάναμε λάθος, στείλε μήνυμα στην ομάδα της διοργάνωσης: {role}.\n\n"
-    "---\n\n"
-    "The ticket you provided does not exist! :'(\n"
-    "If we made a mistake, shoot the organizers a message: {role}. "
-)
-
-TICKET_IN_USE_MESSAGE = (
-    "Το εισιτήριό σου υπάρχει στη βάση μας! Παρ' όλ' αυτά κάποιο άλλο μέλος το έχει ήδη χρησιμοποιήσει :'(\n"
+TICKET_MEMBER_ALREADY_CLAIMED_WITH_NO_ROLE_MESSAGE = (
+    "Έχεις ήδη επικυρώσει ένα εισιτήριο! Παρ' όλ' αυτά, κάτι περίεργο συνέβη "
+    "και δεν έχεις τον κατάλληλο ρόλο για συμμετοχή στα κανάλια του event 🤔\n"
     "Θα επικοινωνήσει σύντομα μαζί σου η ομάδα {role} για να διαλευκάνει την υπόθεση!\n\n"
     "---\n\n"
-    "The ticket you provided exists! However, someone else is already using it :'(\n"
+    "You have already claimed a ticket! However, something weird has happened "
+    "and you still don't have the necessary role to join the channels of the event 🤔\n"
     "The {role} team will contact you soon to resolve the issue! "
 )
 
-TICKET_DOUBLE_CLAIM_MESSAGE = (
-    "Έχεις ήδη επικυρώσει αυτό το εισητήριο.\n\n---\n\nYou have already claimed this ticket. "
+TICKET_NOT_FOUND_IN_DATABASE_MESSAGE = (
+    "Το εισιτήριό σου δεν υπάρχει στη βάση μας! 😓\n"
+    "Αν κάναμε λάθος, στείλε μήνυμα στην ομάδα της διοργάνωσης: {role}.\n\n"
+    "---\n\n"
+    "The ticket you provided does not exist! 😓\n"
+    "If we made a mistake, shoot the organizers a message: {role}. "
 )
 
 TICKET_DB_ERROR_MESSAGE = (
-    "Το εισητήριό σου δεν επικυρώθηκε λόγω σφάλματος στη βάση δεδομένων. Επικοινώνησε με την ομάδα της διοργάνωσης: {role}.\n\n"
+    "Το εισιτήριό σου δεν επικυρώθηκε λόγω σφάλματος στη βάση δεδομένων. Επικοινώνησε με την ομάδα της διοργάνωσης: {role}.\n\n"
     "---\n\n"
     "The ticket was not claimed due to a database error. Please contact the organizers: {role}. "
+)
+
+TICKET_GENERIC_ERROR_MESSAGE = (
+    "Δεν ξέρουμε τι ακριβώς πήγε λάθος! 😵 Επικοινώνησε με την ομάδα της διοργάνωσης: {role} για να το ψάξουν.\n\n"
+    "---\n\n"
+    "We have no idea what exactly went wrong! 😵 Please contact the organizers: {role} to resolve the issue. "
+)
+
+TICKET_ROLE_ASSIGNMENT_ERROR_MESSAGE = (
+    "Ο ρόλος του event δε σου δόθηκε λόγω σφάλματος. Επικοινώνησε με την ομάδα της διοργάνωσης: {role}.\n\n"
+    "---\n\n"
+    "The attendee role was not assigned due to an error. Please contact the organizers: {role}. "
 )
 
 TICKET_ACCEPTED_MESSAGE = (
@@ -106,8 +117,8 @@ TICKET_ACCEPTED_MESSAGE = (
     "Thank you for verifying your ticket {name}! You can now join the channels of the event! 😊 "
 )
 
-TICKET_ROLE_ASSIGNMENT_ERROR = (
-    "Ο ρόλος του event δε σου δόθηκε λόγω σφάλματος. Επικοινώνησε με την ομάδα της διοργάνωσης: {role}.\n\n"
+TICKET_FAILED_MESSAGE = (
+    "Το εισιτήριό σου δεν επικυρώθηκε! Μπορείς να ξανααντιδράσεις με thumbs-up (👍) στο [μήνυμα για τα εισιτήρια]({link}) για να ξαναπροσπαθήσεις.\n\n"
     "---\n\n"
-    "The attendee role was not assigned due to an error. Please contact the organizers: {role}. "
+    "The ticket was not claimed! You can react once more with a thumbs-up (👍) to the [ticket message]({link}) to try again. "
 )

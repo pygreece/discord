@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime, timedelta, timezone
 
-from discord.ext import tasks
+from discord.ext import commands, tasks
 
 from bot.config import SPAM_COOLDOWN
 
@@ -9,13 +9,13 @@ logger = logging.getLogger(__name__)
 
 
 class AntiSpamTask:
-    def __init__(self, bot, expiry_seconds=SPAM_COOLDOWN) -> None:
+    def __init__(self, bot: commands.Bot, expiry_seconds: int = SPAM_COOLDOWN) -> None:
         self.bot = bot
-        self.recent_reactors = {}  # {message_id: {user_id: timestamp}}
+        self.recent_reactors: dict[int, dict[int, datetime]] = {}  # {message_id: {user_id: timestamp}}
         self.expiry_time = timedelta(seconds=expiry_seconds)
         self.cleanup_loop.start()
 
-    def record_reactor(self, message_id: int, user_id: int):
+    def record_reactor(self, message_id: int, user_id: int) -> None:
         """Record a reaction timestamp for a specific message and user."""
         if message_id not in self.recent_reactors:
             self.recent_reactors[message_id] = {}
@@ -33,7 +33,7 @@ class AntiSpamTask:
         return (datetime.now(timezone.utc) - last_reacted) < self.expiry_time
 
     @tasks.loop(seconds=60)
-    async def cleanup_loop(self):
+    async def cleanup_loop(self) -> None:
         now = datetime.now(timezone.utc)
         for message_id in list(self.recent_reactors.keys()):
             self.recent_reactors[message_id] = {

@@ -2,78 +2,38 @@ import logging
 
 import discord
 
-from bot import config, db
+from bot import config, db, exceptions
 from bot.models import Member, Ticket
-from bot.reactions import member_has_reacted_to_msg
-from bot.roles import assign_role
+from bot.roles import member_has_role
 
 logger = logging.getLogger(__name__)
 
 
-async def validate_ticket(member: discord.Member, ticket_id: str) -> bool:
-    """This function checks if a given ticket ID is valid and unclaimed, and if the member
-    has accepted the Code of Conduct. If all conditions are met, the ticket is claimed
-    for the member, and they are assigned the ticket holder role.
-
-    :param discord.Member member: The member attempting to claim the ticket.
-    :param int ticket_id: The ID of the ticket being claimed.
-
-    :param bool returns: True if the ticket was successfully claimed, False otherwise.
+async def can_claim_ticket(member: discord.Member | discord.User, ticket_id: str) -> bool:
     """
+    Checks if a member can claim a ticket.
 
-    # Ensure a ticket ID was given
-    if not ticket_id:
-        logger.info("Ticket ID was not given.")
-        return False
+    :discord.Member member: The discord member attempting to claim a ticket.
+    :str ticket_id: The ticket ID to be claimed as a string, since it is user provided input.
+    
+    :returns bool: True if the member can claim the ticket, False otherwise.
+    """
+    if not isinstance(member, discord.Member):
+        raise exceptions.UserNotMemberException("User was not a member.")
+    
+    if not ticket_id or not ticket_id.isdigit() or len(ticket_id) != 10:
+        raise exceptions.InvalidTicketIdException("Ticket ID must be a 10-digit number.")
+    if member_has_role(member, config.TICKET_HOLDER_ROLE_NAME):
+        raise exceptions.TicketHolderRoleAlreadyAssignedException("Member already has the ticket holder role.")
 
     async with db.get_session() as session:
-        db_member, _ = await Member.get_or_create(id=member.id, session=session)
+        db_member, _ = await Member.get_or_create(member.id, session=session)
+        if not db_member.reacted:
+            raise exceptions.MemberHasNotReactedToCocException("Member has not reacted to the coc message.")
+        if db_member.ticket:
+            raise exceptions.TicketAlreadyClaimedException("Member has already claimed a ticket.")
+        
         db_ticket = await Ticket.get_by_id(int(ticket_id), session=session)
-
-    # Ensure member has reacted to the CoC message
-    if not db_member.reacted:
-        if await member_has_reacted_to_msg(member, config.COC_CHANNEL_ID, config.COC_MESSAGE_ID):
-            db_member.reacted = True
-            async with db.get_session() as session:
-                try:
-                    session.add(db_member)
-                    logger.info(
-                        f"Updated reacted=True for {member.name} ({member.id}) in database."
-                    )
-                except Exception as e:
-                    logger.error(f"Error updating reacted for {member.name} ({member.id}): {e}")
-                    return False
-        else:
-            return False
-
-    # Ensure ticket is in the database
-    if not db_ticket:
-        logger.info("Invalid ticket ID. Not found in db.")
-        return False
-
-    # Ensure ticket is not claimed
-    if db_ticket.member_id and db_ticket.member_id != db_member.id:
-        logger.warning(
-            f"Member {member.name} ({member.id}) was denied a ticket."
-            " The ticket was already claimed."
-        )
-        return False
-
-    elif db_ticket.member_id and db_ticket.member_id == db_member.id:
-        logger.warning(
-            f"Member {member.name} ({member.id}) was denied a ticket."
-            " They already claimed this ticket."
-        )
-        return False
-
-    # Claim the ticket
-    db_ticket.member_id = db_member.id
-    async with db.get_session() as session:
-        try:
-            session.add(db_ticket)
-            logger.info(f"Ticket {ticket_id} claimed by {member.name} ({member.id}) in database.")
-        except Exception as e:
-            logger.error(f"Error updating member_id for ticket {ticket_id} in database: {e}")
-            return False
-
-    return await assign_role(member, config.TICKET_HOLDER_ROLE_NAME)
+        if not db_ticket:
+            raise exceptions.TicketNotFoundInDatabaseException("Ticket not found in the database.")
+    return True

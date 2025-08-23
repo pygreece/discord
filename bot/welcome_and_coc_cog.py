@@ -1,6 +1,7 @@
 import logging
 
-import discord
+import discord 
+import asyncio
 from discord.ext import commands
 
 from bot import config, db, messages
@@ -126,3 +127,90 @@ class WelcomeAndCoC(commands.Cog):
             member,
             f"{member.name} ({member.id}) reacted to coc message",
         )
+
+    
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(administrator=True)
+    async def syncdbcocreactions(self, ctx: commands.Context[commands.Bot]) -> None:
+        """Sync the existing coc reactions with the database."""
+        logger.info("Received sync DB COC reactions command.")
+        assert ctx.guild is not None
+
+        channel = ctx.guild.get_channel(config.COC_CHANNEL_ID)
+        if channel is None or not isinstance(channel, discord.TextChannel):
+            await ctx.reply("Could not find the CoC channel.")
+            return
+
+        try:
+            message = await channel.fetch_message(config.COC_MESSAGE_ID)
+        except discord.NotFound:
+            await ctx.reply("CoC message not found.")
+            return
+        except discord.Forbidden:
+            await ctx.reply("Missing permissions to fetch the CoC message.")
+            return
+
+        updated_users = set()
+        reactions = [reaction for reaction in message.reactions if reaction.emoji in config.ACCEPTABLE_REACTION_EMOJIS]
+        batch_size = 20  # Number of users to process before sleeping
+        sleep_duration = 1.5  # Seconds to sleep between batches
+
+        async with db.get_session() as session:
+            for reaction in reactions:
+                try:
+                    users = [user async for user in reaction.users()]
+                except discord.HTTPException as e:
+                    logger.warning(f"Failed to fetch users for reaction {reaction.emoji}: {e}")
+                    continue
+                
+                for i, member in enumerate(users):
+                    if member.bot:
+                        continue  # Skip bots
+                    db_member, _ = await Member.get_or_create(member.id, session=session)
+                    if not db_member.reacted:
+                        db_member.reacted = True
+                        session.add(db_member)
+                        updated_users.add(member)
+
+                    # Throttle every batch_size users
+                    if (i + 1) % batch_size == 0:
+                        await asyncio.sleep(sleep_duration)
+
+        await ctx.reply(f"COC reactions synced for {len(updated_users)} users.")
+        logger.info(f"Synced {len(updated_users)} users to the database.")
+
+    @commands.command()
+    @commands.guild_only()
+    @commands.has_permissions(administrator=True)
+    async def syncdbmemberrole(self, ctx: commands.Context[commands.Bot]) -> None:
+        """Set reacted=True for all members with the Member role."""
+        logger.info("Received sync DB Member role command.")
+        assert ctx.guild is not None
+
+        member_role = discord.utils.get(ctx.guild.roles, name=config.MEMBER_ROLE_NAME)
+
+        if member_role is None:
+            await ctx.reply("❌ Could not find the Member role.", ephemeral=True, delete_after=10)
+            return
+
+        updated_count = 0
+        failed_count = 0
+
+        await ctx.reply("Starting sync for members with the Member role...", ephemeral=True, delete_after=10)
+
+        async with db.get_session() as session:
+            for member in member_role.members:
+                try:
+                    db_member, _ = await Member.get_or_create(member.id, session=session)
+                    if not db_member.reacted:
+                        db_member.reacted = True
+                        session.add(db_member)
+                        logger.info(f"Set reacted=True for {member.name} ({member.id})")
+                        updated_count += 1
+                except Exception as e:
+                    logger.error(f"Failed to update {member.name} ({member.id}): {e}")
+                    failed_count += 1
+
+        await ctx.reply(f"✅ Sync complete. Updated: {updated_count}, Failed: {failed_count}", ephemeral=True, delete_after=60)
+        logger.info(f"Finished syncing Member role. Updated: {updated_count}, Failed: {failed_count}")

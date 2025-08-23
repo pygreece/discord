@@ -2,6 +2,9 @@ import logging
 
 import discord
 from discord.utils import get as dget
+from random import choice
+
+from bot.exceptions import EmptyRoleException
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +41,7 @@ async def assign_role(member: discord.Member, role_name: str) -> bool:
     return False
 
 
-def has_role(member: discord.Member, role_name: str) -> bool:
+def member_has_role(member: discord.Member, role_name: str) -> bool:
     """Checks if the member has a specific role.
 
     :param discord.Member member: The member to check.
@@ -48,3 +51,16 @@ def has_role(member: discord.Member, role_name: str) -> bool:
     """
     role = dget(member.roles, name=role_name)
     return role is not None
+
+def get_random_member_from_role(role: discord.Role) -> discord.Member:
+    """Returns a random online member from the specified role.
+    
+    :param discord.Role role: The role to get a random member from.
+
+    :returns discord.Member: The random online member from the role.
+    """
+    if len(role.members) == 0:
+        raise EmptyRoleException(f"No members found with the '{role.name}' role.")
+    
+    online_members = [member for member in role.members if member.status != discord.Status.offline]
+    return choice(online_members) if online_members else choice(role.members)
