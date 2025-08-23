@@ -11,7 +11,9 @@ logger = logging.getLogger(__name__)
 class AntiSpamTask:
     def __init__(self, bot: commands.Bot, expiry_seconds: int = SPAM_COOLDOWN) -> None:
         self.bot = bot
-        self.recent_reactors: dict[int, dict[int, datetime]] = {}  # {message_id: {user_id: timestamp}}
+        self.recent_reactors: dict[
+            int, dict[int, datetime]
+        ] = {}  # {message_id: {user_id: timestamp}}
         self.expiry_time = timedelta(seconds=expiry_seconds)
         self.cleanup_loop.start()
 

@@ -3,17 +3,17 @@ import logging
 import discord
 
 from bot.config import TICKET_MESSAGE_EXPIRES_AFTER, TICKET_MESSAGE_LINK
+from bot.messages import TICKET_FAILED_MESSAGE
 from bot.modals.ticket_modal import TicketModal
 from bot.views.base_view import BaseView
-from bot.messages import TICKET_FAILED_MESSAGE
 
 logger = logging.getLogger(__name__)
 
 
 class TicketView(BaseView):
     def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)  
-        self.timeout = TICKET_MESSAGE_EXPIRES_AFTER # 5 minutes timeout
+        super().__init__(*args, **kwargs)
+        self.timeout = TICKET_MESSAGE_EXPIRES_AFTER  # 5 minutes timeout
 
     @discord.ui.button(
         label="Επικύρωσε το εισιτήριό σου! | Claim your ticket!",
@@ -21,7 +21,9 @@ class TicketView(BaseView):
         custom_id="claim_ticket",
         emoji="🎟️",
     )
-    async def button_callback(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    async def button_callback(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
         modal = TicketModal(title="Επικύρωση Εισιτηρίου | Ticket Verification")
         await interaction.response.send_modal(modal)
         await modal.wait()

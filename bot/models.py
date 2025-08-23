@@ -19,8 +19,12 @@ class Member(Base):
     id: Mapped[BigInt] = mapped_column(primary_key=True, autoincrement=False)
     dm_sent: Mapped[bool] = mapped_column(default=False, nullable=False)
     reacted: Mapped[bool] = mapped_column(default=False, nullable=False)
-    ticket_id: Mapped[BigInt | None] = mapped_column(BigInteger, ForeignKey("tickets.id"), nullable=True)
-    ticket: Mapped["Ticket | None"] = relationship("Ticket", back_populates="members", uselist=False)
+    ticket_id: Mapped[BigInt | None] = mapped_column(
+        BigInteger, ForeignKey("tickets.id"), nullable=True
+    )
+    ticket: Mapped["Ticket | None"] = relationship(
+        "Ticket", back_populates="members", uselist=False
+    )
 
     @classmethod
     async def get_by_id(cls, id: int, *, session: AsyncSession) -> Self | None:

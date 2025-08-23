@@ -1,7 +1,7 @@
+import asyncio
 import logging
 
-import discord 
-import asyncio
+import discord
 from discord.ext import commands
 
 from bot import config, db, messages
@@ -128,7 +128,6 @@ class WelcomeAndCoC(commands.Cog):
             f"{member.name} ({member.id}) reacted to coc message",
         )
 
-    
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(administrator=True)
@@ -152,7 +151,11 @@ class WelcomeAndCoC(commands.Cog):
             return
 
         updated_users = set()
-        reactions = [reaction for reaction in message.reactions if reaction.emoji in config.ACCEPTABLE_REACTION_EMOJIS]
+        reactions = [
+            reaction
+            for reaction in message.reactions
+            if reaction.emoji in config.ACCEPTABLE_REACTION_EMOJIS
+        ]
         batch_size = 20  # Number of users to process before sleeping
         sleep_duration = 1.5  # Seconds to sleep between batches
 
@@ -163,7 +166,7 @@ class WelcomeAndCoC(commands.Cog):
                 except discord.HTTPException as e:
                     logger.warning(f"Failed to fetch users for reaction {reaction.emoji}: {e}")
                     continue
-                
+
                 for i, member in enumerate(users):
                     if member.bot:
                         continue  # Skip bots
@@ -197,7 +200,9 @@ class WelcomeAndCoC(commands.Cog):
         updated_count = 0
         failed_count = 0
 
-        await ctx.reply("Starting sync for members with the Member role...", ephemeral=True, delete_after=10)
+        await ctx.reply(
+            "Starting sync for members with the Member role...", ephemeral=True, delete_after=10
+        )
 
         async with db.get_session() as session:
             for member in member_role.members:
@@ -212,5 +217,11 @@ class WelcomeAndCoC(commands.Cog):
                     logger.error(f"Failed to update {member.name} ({member.id}): {e}")
                     failed_count += 1
 
-        await ctx.reply(f"✅ Sync complete. Updated: {updated_count}, Failed: {failed_count}", ephemeral=True, delete_after=60)
-        logger.info(f"Finished syncing Member role. Updated: {updated_count}, Failed: {failed_count}")
+        await ctx.reply(
+            f"✅ Sync complete. Updated: {updated_count}, Failed: {failed_count}",
+            ephemeral=True,
+            delete_after=60,
+        )
+        logger.info(
+            f"Finished syncing Member role. Updated: {updated_count}, Failed: {failed_count}"
+        )
