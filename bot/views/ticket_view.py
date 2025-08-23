@@ -43,5 +43,7 @@ class TicketView(BaseView):
             btn.label = "Η επικύρωση απέτυχε! | Claim Failed!"
             btn.style = discord.ButtonStyle.danger
             btn.emoji = discord.PartialEmoji(name="❌")
-            await self._edit(view=self, content=TICKET_FAILED_MESSAGE.format(link=TICKET_MESSAGE_LINK))
+            await self._edit(
+                view=self, content=TICKET_FAILED_MESSAGE.format(link=TICKET_MESSAGE_LINK)
+            )
         await super().on_timeout()
