@@ -137,7 +137,11 @@ class TicketVerification(commands.Cog):
             )
             return
         except exceptions.MemberHasNotReactedToCocException:
-            await ctx.send(messages.COC_NOT_ACCEPTED_MESSAGE, ephemeral=True, delete_after=10)
+            await ctx.send(
+                messages.COC_NOT_ACCEPTED_MESSAGE.format(link=config.COC_MESSAGE_LINK),
+                ephemeral=True,
+                delete_after=10,
+            )
             return
         except exceptions.TicketAlreadyClaimedException:
             await ctx.channel.add_user(random_organizer)
