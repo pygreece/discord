@@ -3,7 +3,7 @@ import asyncio
 import discord
 from discord.ext import commands
 
-from bot import config, utility_cog, welcome_and_coc_cog
+from bot import config, ticket_cog, utility_cog, welcome_and_coc_cog
 
 
 async def main() -> None:
@@ -16,6 +16,7 @@ async def main() -> None:
     bot = commands.Bot(command_prefix="!", intents=intents)
     await bot.add_cog(utility_cog.Utility(bot))
     await bot.add_cog(welcome_and_coc_cog.WelcomeAndCoC(bot))
+    await bot.add_cog(ticket_cog.TicketVerification(bot))
     await bot.start(config.DISCORD_TOKEN)
 
 
