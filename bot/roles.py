@@ -15,7 +15,7 @@ async def assign_role(member: discord.Member, role_name: str) -> bool:
     :param discord.Member member: The member to assign the role to.
     :param str role_name: The name of the role to assign.
 
-    :returns bool: True if the role was assigned, False otherwise.
+    :returns bool: True if the role was assigned or the member already has the role, False otherwise.
     """
 
     # Assign the "role_name" role
@@ -26,7 +26,7 @@ async def assign_role(member: discord.Member, role_name: str) -> bool:
         return False
     if role in member.roles:
         logger.info(f"{member.name} ({member.id}) already has the '{role.name}' role.")
-        return False
+        return True
 
     try:
         await member.add_roles(role)
