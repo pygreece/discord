@@ -25,21 +25,21 @@ ALREADY_EXISTS_MESSAGE = (
 
 ### Ticket messages
 NEW_MEMBER_TICKET_MESSAGE = (
-    "Είσαι επίσημα μέλος {name}! Μήπως έχεις και εισιτήριο για το pycon Greece 2025; Στείλε στο τσατ !ticket "
-    "κενό και τον αριθμό του εισιτήριου σου για να αποκτήσεις πρόσβαση στα κανάλια της "
+    "Είσαι επίσημα μέλος {name}! Μήπως έχεις και εισιτήριο για το PyCon Greece 2025; Στείλε στο τσατ !ticket "
+    "κενό και τον αριθμό του εισιτήριου σου ή χρησιμοποίησε το παρακάτω κουμπί για να αποκτήσεις πρόσβαση στα κανάλια της "
     "εκδήλωσης! 😊\n\n"
     "---\n\n"
-    "You are officialy a member {name}! Do you also happen to have a ticket for pycon Greece 2025? Reply with !ticket space "
-    "and your ticket number in this chat to get access to the channels of the event! 😊 "
+    "You are officialy a member {name}! Do you also happen to have a ticket for PyCon Greece 2025? Reply with !ticket space "
+    "and your ticket number in this chat or click the button below to get access to the channels of the event! 😊 "
 )
 
 ASK_FOR_TICKET_MESSAGE = (
-    "Γειά σου {name}, έχεις εισιτήριο για το pycon Greece 2025; Στείλε στο τσατ !ticket "
-    "κενό και τον αριθμό του εισιτήριου σου για να αποκτήσεις πρόσβαση στα κανάλια της "
+    "Γειά σου {name}, έχεις εισιτήριο για το PyCon Greece 2025; Στείλε στο τσατ !ticket "
+    "κενό και τον αριθμό του εισιτήριου σου ή χρησιμοποίησε το παρακάτω κουμπί για να αποκτήσεις πρόσβαση στα κανάλια της "
     "εκδήλωσης! 😊\n\n"
     "---\n\n"
-    "Hey {name}, do you happen to have a ticket for pycon Greece 2025? Send !ticket space "
-    "and your ticket number to get access to the channels of the event! 😊 "
+    "Hey {name}, do you happen to have a ticket for PyCon Greece 2025? Send !ticket space "
+    "and your ticket number or click the button below to get access to the channels of the event! 😊 "
 )
 
 ### Ticket Errors
@@ -102,23 +102,17 @@ TICKET_DB_ERROR_MESSAGE = (
 TICKET_GENERIC_ERROR_MESSAGE = (
     "Δεν ξέρουμε τι ακριβώς πήγε λάθος! 😵 Επικοινώνησε με την ομάδα της διοργάνωσης: {role} για να το ψάξουν.\n\n"
     "---\n\n"
-    "We have no idea what exactly went wrong! 😵 Please contact the organizers: {role} to resolve the issue. "
+    "We have no idea what exactly went wrong! 😵 Please contact the {role} to resolve the issue. "
 )
 
 TICKET_ROLE_ASSIGNMENT_ERROR_MESSAGE = (
     "Ο ρόλος του event δε σου δόθηκε λόγω σφάλματος. Επικοινώνησε με την ομάδα της διοργάνωσης: {role}.\n\n"
     "---\n\n"
-    "The attendee role was not assigned due to an error. Please contact the organizers: {role}. "
+    "The participant role was not assigned due to an error. Please contact the organizers: {role}. "
 )
 
 TICKET_ACCEPTED_MESSAGE = (
     "Ευχαριστώ που επικύρωσες το εισιτήριό σου {name}! Μπορείς να συμμετέχεις στα κανάλια της εκδήλωσης! 😊\n\n"
     "---\n\n"
     "Thank you for verifying your ticket {name}! You can now join the channels of the event! 😊 "
-)
-
-TICKET_FAILED_MESSAGE = (
-    "Το εισιτήριό σου δεν επικυρώθηκε! Μπορείς να ξανααντιδράσεις με thumbs-up (👍) στο [μήνυμα για τα εισιτήρια]({link}) για να ξαναπροσπαθήσεις.\n\n"
-    "---\n\n"
-    "The ticket was not claimed! You can react once more with a thumbs-up (👍) to the [ticket message]({link}) to try again. "
 )
