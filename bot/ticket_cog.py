@@ -38,6 +38,7 @@ class TicketVerification(commands.Cog):
             member,
             messages.NEW_MEMBER_TICKET_MESSAGE.format(name=member.mention),
             f"private {config.TICKET_THREAD_PREFIX} thread",
+            view=TicketView(member._user),
         )
 
     @commands.Cog.listener()
