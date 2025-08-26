@@ -76,18 +76,19 @@ class TicketVerification(commands.Cog):
 
     @commands.hybrid_command()
     @commands.guild_only()
-    @commands.has_role(config.MEMBER_ROLE_NAME)
     async def ticket(self, ctx: commands.Context[commands.Bot], ticket_id: str = "") -> None:
         """Allows members to claim tickets by typing !ticket <ticket_id>."""
 
         # The decorator guild_only() explicitly ensures that ctx.guild is not None
         assert ctx.guild is not None, "This command can only be used in a guild."
+        assert isinstance(ctx.author, discord.Member), "Ticket command must be used by a member."
         logger.info(f"Ticket command received from {ctx.author.name}.")
 
         # Ensure command is used in a private ticket channel
         is_valid_thread = (
             isinstance(ctx.channel, discord.Thread)
             and ctx.channel.parent_id == config.TICKET_CHANNEL_ID
+            and member_has_role(ctx.author, config.MEMBER_ROLE_NAME)
         )
         if not is_valid_thread:
             await ctx.message.delete()
