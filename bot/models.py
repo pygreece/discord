@@ -23,7 +23,7 @@ class Member(Base):
         BigInteger, ForeignKey("tickets.id"), nullable=True
     )
     ticket: Mapped["Ticket | None"] = relationship(
-        "Ticket", back_populates="members", uselist=False
+        "Ticket", back_populates="members", uselist=False, lazy="selectin"
     )
 
     @classmethod
@@ -49,7 +49,9 @@ class Ticket(Base):
     __tablename__ = "tickets"
 
     id: Mapped[BigInt] = mapped_column(primary_key=True, autoincrement=False)
-    members: Mapped[list[Member]] = relationship("Member", back_populates="ticket")
+    members: Mapped[list[Member]] = relationship(
+        "Member", back_populates="ticket", lazy="selectin"
+    )
 
     @classmethod
     async def get_by_id(cls, id: int, *, session: AsyncSession) -> Self | None:
