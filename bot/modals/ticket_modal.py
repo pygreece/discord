@@ -42,8 +42,9 @@ class TicketModal(ui.Modal, title="Verify your Ticket"):
             )
             logger.error("The ticket modal could not find the organizer role.")
             return
-        random_organizer = get_random_member_from_role(organizer_role)
-        if not random_organizer:
+        try:
+            random_organizer = get_random_member_from_role(organizer_role)
+        except exceptions.EmptyRoleException:
             self.success = False
             await interaction.response.send_message(
                 messages.TICKET_GENERIC_ERROR_MESSAGE.format(role=f"@{config.ORGANIZER_ROLE_NAME}")
