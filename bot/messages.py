@@ -26,20 +26,24 @@ ALREADY_EXISTS_MESSAGE = (
 ### Ticket messages
 NEW_MEMBER_TICKET_MESSAGE = (
     "Είσαι επίσημα μέλος {name}! Μήπως έχεις και εισιτήριο για το PyCon Greece 2025; Στείλε στο τσατ !ticket "
-    "κενό και τον αριθμό του εισιτήριου σου ή χρησιμοποίησε το παρακάτω κουμπί για να αποκτήσεις πρόσβαση στα κανάλια της "
-    "εκδήλωσης! 😊\n\n"
+    "κενό και τον αριθμό παραγγελίας σου (μπορείς να βρεις τον αριθμό παραγγελίας στο email που πήρες "
+    "όταν αγόρασες το εισιτήριο - ψάξε PyCon Greece 2025 στο inbox σου) ή χρησιμοποίησε το παρακάτω κουμπί "
+    "για να αποκτήσεις πρόσβαση στα κανάλια της εκδήλωσης! 😊\n\n"
     "---\n\n"
     "You are officialy a member {name}! Do you also happen to have a ticket for PyCon Greece 2025? Reply with !ticket space "
-    "and your ticket number in this chat or click the button below to get access to the channels of the event! 😊 "
+    "and your order number (you can find the order number in the email you received when you bought your ticket - "
+    "search for PyCon Greece 2025 in your inbox) in this chat or click the button below to get access to the channels of the event! 😊 "
 )
 
 ASK_FOR_TICKET_MESSAGE = (
     "Γειά σου {name}, έχεις εισιτήριο για το PyCon Greece 2025; Στείλε στο τσατ !ticket "
-    "κενό και τον αριθμό του εισιτήριου σου ή χρησιμοποίησε το παρακάτω κουμπί για να αποκτήσεις πρόσβαση στα κανάλια της "
-    "εκδήλωσης! 😊\n\n"
+    "κενό και τον αριθμό παραγγελίας σου (μπορείς να βρεις τον αριθμό παραγγελίας στο email που πήρες "
+    "όταν αγόρασες το εισιτήριο - ψάξε PyCon Greece 2025 στο inbox σου) ή χρησιμοποίησε το παρακάτω κουμπί "
+    "για να αποκτήσεις πρόσβαση στα κανάλια της εκδήλωσης! 😊\n\n"
     "---\n\n"
     "Hey {name}, do you happen to have a ticket for PyCon Greece 2025? Send !ticket space "
-    "and your ticket number or click the button below to get access to the channels of the event! 😊 "
+    "and your order number (you can find the order number in the email you received when you bought your ticket - "
+    "search for PyCon Greece 2025 in your inbox) in this chat or click the button below to get access to the channels of the event! 😊 "
 )
 
 ### Ticket Errors
@@ -52,15 +56,15 @@ TICKET_INVALID_THREAD_MESSAGE = (
 )
 
 TICKET_ID_MISSING_MESSAGE = (
-    "Παρακαλώ συμπερίλαβε τον αριθμό του εισιτηρίου μετά το !ticket.\n\n"
+    "Παρακαλώ συμπερίλαβε τον αριθμό παραγγελίας μετά το !ticket.\n\n"
     "---\n\n"
-    "Please provide a ticket ID after !ticket. "
+    "Please provide an order ID after !ticket. "
 )
 
 TICKET_INVALID_ID_MESSAGE = (
-    "Λάθος αριθμός εισιτηρίου, παρακαλώ ξαναπροσπάθησε.\n\n"
+    "Λάθος αριθμός παραγγελίας, παρακαλώ ξαναπροσπάθησε.\n\n"
     "---\n\n"
-    "Invalid ticket ID, please try again. "
+    "Invalid order ID, please try again. "
 )
 
 TICKET_MEMBER_ALREADY_CLAIMED_MESSAGE = (
