@@ -109,15 +109,16 @@ class WelcomeAndCoC(commands.Cog):
             db_member, _ = await Member.get_or_create(id=member.id, session=session)
             if db_member.reacted:
                 logger.info("Member already reacted to CoC message.")
-                return
-
-            db_member.reacted = True
-            try:
-                session.add(db_member)
-                logger.info(f"Updated reacted=True for {member.name} ({member.id}) in database.")
-            except Exception as e:
-                logger.error(f"Error updating reacted for {member.name} ({member.id}): {e}")
-                return
+            else:
+                db_member.reacted = True
+                try:
+                    session.add(db_member)
+                    logger.info(
+                        f"Updated reacted=True for {member.name} ({member.id}) in database."
+                    )
+                except Exception as e:
+                    logger.error(f"Error updating reacted for {member.name} ({member.id}): {e}")
+                    return
 
         self.bot.dispatch("new_member_reacted_to_coc", member)
 
