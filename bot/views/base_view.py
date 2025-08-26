@@ -13,18 +13,18 @@ class BaseView(discord.ui.View):
     interaction: discord.Interaction | None = None
     message: discord.Message | None = None
 
-    def __init__(self, user: discord.User, timeout: float | None = None) -> None:
+    def __init__(self, member: discord.Member, timeout: float | None = None) -> None:
         """Called when the view is initialized."""
         super().__init__(timeout=timeout)
-        # Set the user who invoked the command as the user who can interact with the view
-        self.user = user
+        # Set the member who invoked the command as the member who can interact with the view
+        self.member = member
 
     async def interaction_check(self, interaction: discord.Interaction[discord.Client]) -> bool:
         """Called to check whether an interaction should be handled by this view."""
-        # Only respond to interactions from the user who invoked the command that sent this view
-        if interaction.user != self.user:
+        # Only respond to interactions from the member who invoked the command that sent this view
+        if interaction.user.id != self.member.id:
             await interaction.response.send_message(
-                f"Only {self.user.mention} can use this view.", ephemeral=True
+                f"Only {self.member.mention} can use this view.", ephemeral=True
             )
             return False
         self.interaction = interaction
