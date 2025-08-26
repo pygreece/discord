@@ -3,10 +3,9 @@ import logging
 import discord
 
 from bot import config
-from bot.messages import TICKET_FAILED_MESSAGE
 from bot.modals.ticket_modal import TicketModal
-from bot.views.base_view import BaseView
 from bot.senders import delete_private_thread
+from bot.views.base_view import BaseView
 
 logger = logging.getLogger(__name__)
 
