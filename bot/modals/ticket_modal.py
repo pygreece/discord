@@ -92,8 +92,6 @@ class TicketModal(ui.Modal, title="Verify your Ticket"):
             await interaction.channel.add_user(random_organizer)
             await interaction.response.send_message(
                 messages.TICKET_NOT_FOUND_IN_DATABASE_MESSAGE.format(role=organizer_role.mention),
-                ephemeral=True,
-                delete_after=10,
             )
             return
         except Exception as e:

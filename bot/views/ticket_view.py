@@ -2,10 +2,11 @@ import logging
 
 import discord
 
-from bot.config import TICKET_MESSAGE_EXPIRES_AFTER, TICKET_MESSAGE_LINK
+from bot import config
 from bot.messages import TICKET_FAILED_MESSAGE
 from bot.modals.ticket_modal import TicketModal
 from bot.views.base_view import BaseView
+from bot.senders import delete_private_thread
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +14,7 @@ logger = logging.getLogger(__name__)
 class TicketView(BaseView):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.timeout = TICKET_MESSAGE_EXPIRES_AFTER  # 5 minutes timeout
+        self.timeout = config.TICKET_MESSAGE_EXPIRES_AFTER  # 5 minutes timeout
 
     @discord.ui.button(
         label="Επικύρωσε το εισιτήριό σου! | Claim your ticket!",
@@ -38,12 +39,9 @@ class TicketView(BaseView):
         await self._edit(view=self)
 
     async def on_timeout(self) -> None:
-        btn = self.children[0]
-        if isinstance(btn, discord.ui.Button) and not btn.disabled:
-            btn.label = "Η επικύρωση απέτυχε! | Claim Failed!"
-            btn.style = discord.ButtonStyle.danger
-            btn.emoji = discord.PartialEmoji(name="❌")
-            await self._edit(
-                view=self, content=TICKET_FAILED_MESSAGE.format(link=TICKET_MESSAGE_LINK)
-            )
-        await super().on_timeout()
+        await delete_private_thread(
+            config.TICKET_CHANNEL_ID,
+            config.TICKET_THREAD_PREFIX,
+            self.member,
+            "ticket verification timed out",
+        )
