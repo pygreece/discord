@@ -51,7 +51,7 @@ COC_THREAD_PREFIX=welcome
 TICKET_HOLDER_ROLE_NAME=ticketholders
 TICKET_MESSAGE_LINK=<message-link-of-ticket-message>
 TICKET_THREAD_PREFIX=ticket
-TICKET_MESSAGE_EXPIRES_AFTER=<expiration-time-in-seconds>
+BOT_INTERACTIONS_CHANNEL_ID=<bot-interactions-channel-id>
    ```
 
 > Use `compose.yml` to set DB credentials

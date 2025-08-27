@@ -3,12 +3,9 @@ import logging
 import discord
 from discord.ext import commands
 
-from bot import config, exceptions, messages
-from bot.roles import get_random_member_from_role, member_has_role
-from bot.sanitizers import sanitize_ticket_id
+from bot import config, messages
+from bot.roles import member_has_role
 from bot.senders import delete_private_thread, send_private_message_in_thread
-from bot.services.ticket_services import claim_ticket
-from bot.validations.ticket_validation import can_claim_ticket
 from bot.views.ticket_view import TicketView
 
 logger = logging.getLogger(__name__)
@@ -76,123 +73,30 @@ class TicketVerification(commands.Cog):
 
     @commands.hybrid_command()
     @commands.guild_only()
-    async def ticket(self, ctx: commands.Context[commands.Bot], ticket_id: str = "") -> None:
-        """Allows members to claim tickets by typing !ticket <ticket_id>."""
+    async def ticket(self, ctx: commands.Context[commands.Bot]) -> None:
+        """Allows members to start the ticket verification flow by typing !ticket in the #bot-interactions channel."""
 
-        # The decorator guild_only() explicitly ensures that ctx.guild is not None
-        assert ctx.guild is not None, "This command can only be used in a guild."
-        assert isinstance(ctx.author, discord.Member), "Ticket command must be used by a member."
-        logger.info(f"Ticket command received from {ctx.author.name}.")
+        channel = discord.utils.get(ctx.guild.text_channels, id=config.BOT_INTERACTIONS_CHANNEL_ID)
+        if not channel:
+            logger.error("Channel with name=bot-interactions not found in the server.")
+            return
 
-        # Ensure command is used in a private ticket channel
-        is_valid_thread = (
-            isinstance(ctx.channel, discord.Thread)
-            and ctx.channel.parent_id == config.TICKET_CHANNEL_ID
-            and member_has_role(ctx.author, config.MEMBER_ROLE_NAME)
-        )
-        if not is_valid_thread:
+        if ctx.channel.id != channel.id:
+            logger.info("Message sent in the wrong channel. Deleting.")
             await ctx.message.delete()
             await ctx.send(
-                messages.TICKET_INVALID_THREAD_MESSAGE.format(link=config.TICKET_MESSAGE_LINK),
+                messages.TICKET_INVALID_CHANNEL_MESSAGE.format(channel=channel.mention),
                 ephemeral=True,
-                delete_after=10,
+                delete_after=20,
             )
-            logger.warning(
-                f"Ticket command received from {ctx.author.name} in an invalid channel."
-            )
-            return
 
-        assert isinstance(ctx.channel, discord.Thread), (
-            "Ticket command must be used in a private thread."
+        logger.info(f"Received !ticket command in #bot-interactions from {ctx.author.name}")
+        # Create the private thread
+        await send_private_message_in_thread(
+            ctx.channel.id,
+            config.TICKET_THREAD_PREFIX,
+            ctx.author,
+            messages.NEW_MEMBER_TICKET_MESSAGE.format(name=ctx.author.mention),
+            f"private {config.TICKET_THREAD_PREFIX} thread",
+            view=TicketView(ctx.author),
         )
-        assert isinstance(ctx.author, discord.Member), "Ticket command must be used by a member."
-
-        if member_has_role(ctx.author, config.TICKET_HOLDER_ROLE_NAME):
-            logger.info(
-                f"Member {ctx.author.name} ({ctx.author.id}) already has the {config.TICKET_HOLDER_ROLE_NAME} role."
-            )
-            return
-
-        organizer_role = discord.utils.get(ctx.guild.roles, name=config.ORGANIZER_ROLE_NAME)
-        if not organizer_role:
-            logger.error("The ticket cog could not find the organizer role.")
-            return
-        try:
-            random_organizer = get_random_member_from_role(organizer_role)
-        except exceptions.EmptyRoleException as e:
-            logger.error(e)
-            return
-
-        # Remove the hashtag and/or whitespace from the ticket ID
-        ticket_id = sanitize_ticket_id(ticket_id)
-        try:
-            member_can_claim_ticket = await can_claim_ticket(ctx.author, ticket_id)
-        except exceptions.UserNotMemberException as e:
-            logger.error(f"Error claiming ticket for {ctx.author.name} ({ctx.author.id}): {e}")
-            return
-        except exceptions.InvalidTicketIdException:
-            await ctx.send(messages.TICKET_INVALID_ID_MESSAGE, ephemeral=True, delete_after=10)
-            return
-        except exceptions.TicketHolderRoleAlreadyAssignedException:
-            await ctx.send(
-                messages.TICKET_MEMBER_ALREADY_CLAIMED_MESSAGE, ephemeral=True, delete_after=10
-            )
-            return
-        except exceptions.MemberHasNotReactedToCocException:
-            await ctx.send(
-                messages.COC_NOT_ACCEPTED_MESSAGE.format(link=config.COC_MESSAGE_LINK),
-                ephemeral=True,
-                delete_after=10,
-            )
-            return
-        except exceptions.TicketAlreadyClaimedException:
-            await ctx.channel.add_user(random_organizer)
-            await ctx.send(
-                messages.TICKET_MEMBER_ALREADY_CLAIMED_WITH_NO_ROLE_MESSAGE.format(
-                    role=organizer_role.mention
-                )
-            )
-            return
-        except exceptions.TicketNotFoundInDatabaseException:
-            await ctx.channel.add_user(random_organizer)
-            await ctx.send(
-                messages.TICKET_NOT_FOUND_IN_DATABASE_MESSAGE.format(role=organizer_role.mention)
-            )
-            return
-        except Exception as e:
-            await ctx.channel.add_user(random_organizer)
-            await ctx.send(messages.TICKET_DB_ERROR_MESSAGE.format(role=organizer_role.mention))
-            logger.error(f"Error claiming ticket for {ctx.author.name} ({ctx.author.id}): {e}")
-            return
-
-        if not member_can_claim_ticket:
-            await ctx.channel.add_user(random_organizer)
-            await ctx.send(
-                messages.TICKET_GENERIC_ERROR_MESSAGE.format(role=organizer_role.mention)
-            )
-            logger.error(f"Error claiming ticket for {ctx.author.name} ({ctx.author.id})")
-            return
-
-        try:
-            member_claimed_ticket = await claim_ticket(ctx.author, int(ticket_id))
-        except exceptions.RoleAssignmentFailedException:
-            await ctx.channel.add_user(random_organizer)
-            await ctx.send(
-                messages.TICKET_ROLE_ASSIGNMENT_ERROR_MESSAGE.format(role=organizer_role.mention)
-            )
-            return
-        except Exception as e:
-            await ctx.channel.add_user(random_organizer)
-            await ctx.send(messages.TICKET_DB_ERROR_MESSAGE.format(role=organizer_role.mention))
-            logger.error(f"Error claiming ticket for {ctx.author.name} ({ctx.author.id}): {e}")
-            return
-
-        if not member_claimed_ticket:
-            await ctx.channel.add_user(random_organizer)
-            await ctx.send(
-                messages.TICKET_GENERIC_ERROR_MESSAGE.format(role=organizer_role.mention)
-            )
-            logger.error(f"Error claiming ticket for {ctx.author.name} ({ctx.author.id})")
-            return
-
-        await ctx.send(messages.TICKET_ACCEPTED_MESSAGE.format(name=ctx.author.mention))

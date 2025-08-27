@@ -47,12 +47,10 @@ ASK_FOR_TICKET_MESSAGE = (
 )
 
 ### Ticket Errors
-TICKET_INVALID_THREAD_MESSAGE = (
-    "Αυτή η εντολή μπορεί να χρησιμοποιηθεί μόνο στο προσωπικό σου νήμα στο κανάλι για τα εισιτήρια. "
-    "Αν δεν υπάρχει νήμα τότε αντίδρασε με ένα thumbs-up (👍) στο [μήνυμα για τα εισιτήρια]({link}).\n\n"
+TICKET_INVALID_CHANNEL_MESSAGE = (
+    "Αυτή η εντολή μπορεί να χρησιμοποιηθεί μόνο στο κανάλι {channel}.\n\n"
     "---\n\n"
-    "This command can only be used in the user's thread in the ticket channel. "
-    "Please react to the [ticket message]({link}) with a thumbs-up (👍) if the thread is missing. "
+    "This command can only be used in the {channel} channel."
 )
 
 TICKET_ID_MISSING_MESSAGE = (
@@ -116,7 +114,9 @@ TICKET_ROLE_ASSIGNMENT_ERROR_MESSAGE = (
 )
 
 TICKET_ACCEPTED_MESSAGE = (
-    "Ευχαριστώ που επικύρωσες το εισιτήριό σου {name}! Μπορείς να συμμετέχεις στα κανάλια της εκδήλωσης! 😊\n\n"
+    "Ευχαριστώ που επικύρωσες το εισιτήριό σου {name}! Μπορείς τώρα να συμμετέχεις στα κανάλια της εκδήλωσης! 😊 "
+    "(Αυτό το νήμα θα διαγραφεί σύντομα αυτόματα)\n\n"
     "---\n\n"
     "Thank you for verifying your ticket {name}! You can now join the channels of the event! 😊 "
+    "(This thread will be automatically deleted soon)"
 )
