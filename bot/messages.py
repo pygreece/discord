@@ -25,40 +25,32 @@ ALREADY_EXISTS_MESSAGE = (
 
 ### Ticket messages
 NEW_MEMBER_TICKET_MESSAGE = (
-    "Είσαι επίσημα μέλος {name}! Μήπως έχεις και εισιτήριο για το PyCon Greece 2025; Στείλε στο τσατ !ticket "
-    "κενό και τον αριθμό παραγγελίας σου (μπορείς να βρεις τον αριθμό παραγγελίας στο email που πήρες "
-    "όταν αγόρασες το εισιτήριο - ψάξε PyCon Greece 2025 στο inbox σου) ή χρησιμοποίησε το παρακάτω κουμπί "
+    "Είσαι επίσημα μέλος {name}! Μήπως έχεις και εισιτήριο για το PyCon Greece 2025; Πάτησε το παρακάτω κουμπί "
+    "και βάλε τον αριθμό παραγγελίας σου (μπορείς να βρεις τον αριθμό παραγγελίας στο email που πήρες "
+    "όταν αγόρασες το εισιτήριο - ψάξε PyCon Greece 2025 στο inbox σου) "
     "για να αποκτήσεις πρόσβαση στα κανάλια της εκδήλωσης! 😊\n\n"
     "---\n\n"
-    "You are officialy a member {name}! Do you also happen to have a ticket for PyCon Greece 2025? Reply with !ticket space "
-    "and your order number (you can find the order number in the email you received when you bought your ticket - "
-    "search for PyCon Greece 2025 in your inbox) in this chat or click the button below to get access to the channels of the event! 😊 "
+    "You are officialy a member {name}! Do you also happen to have a ticket for PyCon Greece 2025? Click the button below "
+    "and enter your order number (you can find the order number in the email you received when you bought your ticket - "
+    "search for PyCon Greece 2025 in your inbox) to get access to the channels of the event! 😊 "
 )
 
 ASK_FOR_TICKET_MESSAGE = (
-    "Γειά σου {name}, έχεις εισιτήριο για το PyCon Greece 2025; Στείλε στο τσατ !ticket "
-    "κενό και τον αριθμό παραγγελίας σου (μπορείς να βρεις τον αριθμό παραγγελίας στο email που πήρες "
-    "όταν αγόρασες το εισιτήριο - ψάξε PyCon Greece 2025 στο inbox σου) ή χρησιμοποίησε το παρακάτω κουμπί "
+    "Γειά σου {name}, έχεις εισιτήριο για το PyCon Greece 2025; Πάτησε το παρακάτω κουμπί "
+    "και βάλε τον αριθμό παραγγελίας σου (μπορείς να βρεις τον αριθμό παραγγελίας στο email που πήρες "
+    "όταν αγόρασες το εισιτήριο - ψάξε PyCon Greece 2025 στο inbox σου) "
     "για να αποκτήσεις πρόσβαση στα κανάλια της εκδήλωσης! 😊\n\n"
     "---\n\n"
-    "Hey {name}, do you happen to have a ticket for PyCon Greece 2025? Send !ticket space "
-    "and your order number (you can find the order number in the email you received when you bought your ticket - "
-    "search for PyCon Greece 2025 in your inbox) in this chat or click the button below to get access to the channels of the event! 😊 "
+    "Hey {name}, do you happen to have a ticket for PyCon Greece 2025? Click the button below "
+    "and enter your order number (you can find the order number in the email you received when you bought your ticket - "
+    "search for PyCon Greece 2025 in your inbox) to get access to the channels of the event! 😊 "
 )
 
 ### Ticket Errors
-TICKET_INVALID_THREAD_MESSAGE = (
-    "Αυτή η εντολή μπορεί να χρησιμοποιηθεί μόνο στο προσωπικό σου νήμα στο κανάλι για τα εισιτήρια. "
-    "Αν δεν υπάρχει νήμα τότε αντίδρασε με ένα thumbs-up (👍) στο [μήνυμα για τα εισιτήρια]({link}).\n\n"
+TICKET_INVALID_CHANNEL_MESSAGE = (
+    "Αυτή η εντολή μπορεί να χρησιμοποιηθεί μόνο στο κανάλι {channel}.\n\n"
     "---\n\n"
-    "This command can only be used in the user's thread in the ticket channel. "
-    "Please react to the [ticket message]({link}) with a thumbs-up (👍) if the thread is missing. "
-)
-
-TICKET_ID_MISSING_MESSAGE = (
-    "Παρακαλώ συμπερίλαβε τον αριθμό παραγγελίας μετά το !ticket.\n\n"
-    "---\n\n"
-    "Please provide an order ID after !ticket. "
+    "This command can only be used in the {channel} channel."
 )
 
 TICKET_INVALID_ID_MESSAGE = (
@@ -116,7 +108,9 @@ TICKET_ROLE_ASSIGNMENT_ERROR_MESSAGE = (
 )
 
 TICKET_ACCEPTED_MESSAGE = (
-    "Ευχαριστώ που επικύρωσες το εισιτήριό σου {name}! Μπορείς να συμμετέχεις στα κανάλια της εκδήλωσης! 😊\n\n"
+    "Ευχαριστώ που επικύρωσες το εισιτήριό σου {name}! Μπορείς τώρα να συμμετέχεις στα κανάλια της εκδήλωσης! 😊 "
+    "(Αυτό το νήμα θα διαγραφεί σύντομα αυτόματα)\n\n"
     "---\n\n"
     "Thank you for verifying your ticket {name}! You can now join the channels of the event! 😊 "
+    "(This thread will be automatically deleted soon)"
 )

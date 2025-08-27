@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class TicketView(BaseView):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.timeout = config.TICKET_MESSAGE_EXPIRES_AFTER  # 5 minutes timeout
+        self.timeout = None
 
     @discord.ui.button(
         label="Επικύρωσε το εισιτήριό σου! | Claim your ticket!",
@@ -32,6 +32,7 @@ class TicketView(BaseView):
             button.style = discord.ButtonStyle.success
             button.emoji = discord.PartialEmoji(name="✅")
             button.disabled = True
+            self.timeout = 45
         else:
             button.label = "Προσπάθησε ξανά | Try again"
             button.emoji = discord.PartialEmoji(name="🔄")
