@@ -3,7 +3,7 @@
 
 # PyGreece Discord Bot 🤖
 
-A Discord bot for the PyGreece online community that handles member onboarding and through a Code of Conduct acceptance flow.  
+A Discord bot for the PyGreece online community that handles member onboarding and through a Code of Conduct acceptance flow.
 It also implements a ticket verification system.
 
 ## ✨ Features

@@ -70,19 +70,19 @@ class TicketVerification(commands.Cog):
     @commands.guild_only()
     async def ticket(self, ctx: commands.Context[commands.Bot]) -> None:
         """Claim tickets by typing !ticket to start a thread.
-        
+
         Click the button in the private thread created by the bot to claim your ticket and join the event channels.
         """
 
         assert ctx.guild is not None, "This command can only be used in a guild."
         assert isinstance(ctx.author, discord.Member), "Ticket command must be used by a member."
-        
+
         if not member_has_role(ctx.author, config.MEMBER_ROLE_NAME):
             await ctx.message.delete()
             await ctx.reply(
                 messages.COC_NOT_ACCEPTED_MESSAGE.format(link=config.COC_MESSAGE_LINK),
-                ephemeral=True, 
-                delete_after=30
+                ephemeral=True,
+                delete_after=30,
             )
             logger.info(
                 f"Member {ctx.author.name} ({ctx.author.id}) does not have the {config.MEMBER_ROLE_NAME} role."
@@ -93,22 +93,20 @@ class TicketVerification(commands.Cog):
         if member_has_role(ctx.author, config.TICKET_HOLDER_ROLE_NAME):
             await ctx.message.delete()
             await ctx.reply(
-                messages.TICKET_MEMBER_ALREADY_CLAIMED_MESSAGE,
-                ephemeral=True, 
-                delete_after=30
+                messages.TICKET_MEMBER_ALREADY_CLAIMED_MESSAGE, ephemeral=True, delete_after=30
             )
             logger.info(
                 f"Member {ctx.author.name} ({ctx.author.id}) already has the {config.TICKET_HOLDER_ROLE_NAME} role."
                 f"Ticket command ignored."
             )
             return
-        
+
         if ctx.channel.id != config.BOT_INTERACTIONS_CHANNEL_ID:
             bot_channel = self.bot.get_channel(config.BOT_INTERACTIONS_CHANNEL_ID)
             if not (bot_channel and isinstance(bot_channel, discord.TextChannel)):
                 logger.error("Could not find the bot interactions channel.")
                 return
-                
+
             await ctx.message.delete()
             await ctx.send(
                 messages.TICKET_INVALID_CHANNEL_MESSAGE.format(channel=bot_channel.mention),
@@ -119,9 +117,11 @@ class TicketVerification(commands.Cog):
                 f"Ticket command received from {ctx.author.name} in an invalid channel."
             )
             return
-        
-        logger.info(f"Ticket command received from {ctx.author.name} ({ctx.author.id}) in the bot interactions channel.")
-        
+
+        logger.info(
+            f"Ticket command received from {ctx.author.name} ({ctx.author.id}) in the bot interactions channel."
+        )
+
         await send_private_message_in_thread(
             config.TICKET_CHANNEL_ID,
             config.TICKET_THREAD_PREFIX,
