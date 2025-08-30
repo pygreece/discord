@@ -62,13 +62,13 @@ class TicketModal(ui.Modal, title="Verify your Ticket"):
         except exceptions.InvalidTicketIdException:
             self.success = False
             await interaction.response.send_message(
-                messages.TICKET_INVALID_ID_MESSAGE, ephemeral=True, delete_after=10
+                messages.TICKET_INVALID_ID_MESSAGE, ephemeral=True, delete_after=30
             )
             return
         except exceptions.TicketHolderRoleAlreadyAssignedException:
             self.success = False
             await interaction.response.send_message(
-                messages.TICKET_MEMBER_ALREADY_CLAIMED_MESSAGE, ephemeral=True, delete_after=10
+                messages.TICKET_MEMBER_ALREADY_CLAIMED_MESSAGE, ephemeral=True, delete_after=30
             )
             return
         except exceptions.MemberHasNotReactedToCocException:
@@ -76,7 +76,7 @@ class TicketModal(ui.Modal, title="Verify your Ticket"):
             await interaction.response.send_message(
                 messages.COC_NOT_ACCEPTED_MESSAGE.format(link=config.COC_MESSAGE_LINK),
                 ephemeral=True,
-                delete_after=10,
+                delete_after=30,
             )
             return
         except exceptions.TicketAlreadyClaimedException:

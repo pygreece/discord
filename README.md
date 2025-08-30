@@ -3,13 +3,16 @@
 
 # PyGreece Discord Bot 🤖
 
-A Discord bot for the PyGreece online community that handles member onboarding through a Code of Conduct acceptance flow.
+A Discord bot for the PyGreece online community that handles member onboarding and through a Code of Conduct acceptance flow.
+It also implements a ticket verification system.
 
 ## ✨ Features
 
 - 👋 Automatically sends welcome messages to new members
 - 📜 Implements a Code of Conduct acceptance workflow
-- 🏷️ Assigns roles when members react to the Code of Conduct message
+- 🏷️ Assigns a role when members react to the Code of Conduct message
+- 🚧 Handles ticket verification workflow
+- 🎟️ Assigns a role when members submit their ticket IDs
 - 🗄️ Tracks member status in a database
 
 ## 🔧 Requirements
@@ -37,7 +40,7 @@ A Discord bot for the PyGreece online community that handles member onboarding t
 ### Environment Configuration
 
 Copy `.env.sample` to a new file called `.env` and update the placeholder values:
-   ```dosini
+```dosini
 DISCORD_TOKEN=<your-discord-bot-token>
 DISCORD_GUILD=<your-discord-server-name>
 ORGANIZER_ROLE_NAME=organizers
@@ -51,8 +54,8 @@ COC_THREAD_PREFIX=welcome
 TICKET_HOLDER_ROLE_NAME=ticketholders
 TICKET_MESSAGE_LINK=<message-link-of-ticket-message>
 TICKET_THREAD_PREFIX=ticket
-TICKET_MESSAGE_EXPIRES_AFTER=<expiration-time-in-seconds>
-   ```
+BOT_INTERACTIONS_CHANNEL_ID=<bot-interactions-channel-id>
+```
 
 > Use `compose.yml` to set DB credentials
 
