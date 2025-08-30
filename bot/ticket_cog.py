@@ -72,13 +72,13 @@ class TicketVerification(commands.Cog):
         """Claim tickets by typing !ticket to start a thread. | Επικύρωσε το εισιτήριό σου γράφοντας !ticket για να ξεκινήσεις ένα νήμα.
 
         Click the button in the private thread created by the bot
-        to claim your ticket and join the event channels. 
-        You need to have reacted to the coc message and 
+        to claim your ticket and join the event channels.
+        You need to have reacted to the coc message and
         have the community member role in order to use this command.
-        
-        Κάνε κλικ στο κουμπί στο προσωπικό νήμα που δημιουργεί το bot 
-        για να επικυρώσεις το εισιτήριό σου και να αποκτήσεις πρόσβαση στα κανάλια της εκδήλωσης. 
-        Θα πρέπει να έχεις αντιδράσει στον κώδικα δεοντολογίας και 
+
+        Κάνε κλικ στο κουμπί στο προσωπικό νήμα που δημιουργεί το bot
+        για να επικυρώσεις το εισιτήριό σου και να αποκτήσεις πρόσβαση στα κανάλια της εκδήλωσης.
+        Θα πρέπει να έχεις αντιδράσει στον κώδικα δεοντολογίας και
         να έχεις το ρόλο community member για να χρησιμοποιήσεις αυτήν την εντολή.
         """
 
