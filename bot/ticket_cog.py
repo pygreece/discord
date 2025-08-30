@@ -69,9 +69,17 @@ class TicketVerification(commands.Cog):
     @commands.hybrid_command()
     @commands.guild_only()
     async def ticket(self, ctx: commands.Context[commands.Bot]) -> None:
-        """Claim tickets by typing !ticket to start a thread.
+        """Claim tickets by typing !ticket to start a thread. | Επικύρωσε το εισιτήριό σου γράφοντας !ticket για να ξεκινήσεις ένα νήμα.
 
-        Click the button in the private thread created by the bot to claim your ticket and join the event channels.
+        Click the button in the private thread created by the bot
+        to claim your ticket and join the event channels. 
+        You need to have reacted to the coc message and 
+        have the community member role in order to use this command.
+        
+        Κάνε κλικ στο κουμπί στο προσωπικό νήμα που δημιουργεί το bot 
+        για να επικυρώσεις το εισιτήριό σου και να αποκτήσεις πρόσβαση στα κανάλια της εκδήλωσης. 
+        Θα πρέπει να έχεις αντιδράσει στον κώδικα δεοντολογίας και 
+        να έχεις το ρόλο community member για να χρησιμοποιήσεις αυτήν την εντολή.
         """
 
         assert ctx.guild is not None, "This command can only be used in a guild."
