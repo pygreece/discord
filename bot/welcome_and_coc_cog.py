@@ -120,7 +120,9 @@ class WelcomeAndCoC(commands.Cog):
                     logger.error(f"Error updating reacted for {member.name} ({member.id}): {e}")
                     return
 
-        self.bot.dispatch("new_member_reacted_to_coc", member)
+        # This opens a new thread for ticket verification. Should be deactivate when a PyCon is not
+        # on. TODO: Reactivate it when PyCon Greece 2026 is in the works.
+        # self.bot.dispatch("new_member_reacted_to_coc", member)
 
         await delete_private_thread(
             config.COC_CHANNEL_ID,
