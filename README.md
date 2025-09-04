@@ -18,6 +18,7 @@ It also implements a ticket verification system.
 ## 🔧 Requirements
 
 - 🐍 Python 3.12+
+- 📚 discord.py library
 - 🐘 PostgreSQL database (for production)
 - 🔑 Discord Bot Token
 
@@ -102,7 +103,7 @@ docker-compose up -d
   - `models.py`: Database models
   - `roles.py`: Role related functions
   - `sanitizers.py`: String sanitizers
-  - `senders.py`: Sends dms, creates private categories and channels if dms are closed
+  - `senders.py`: Sends messages, creates and deletes the relevant private threads
   - `ticket_cog.py`: Ticket verification system
   - `utility_cog.py`: Administration commands - main cog
   - `utility_tasks.py`: Background tasks
