@@ -1,6 +1,6 @@
 from typing import Self
 
-from sqlalchemy import BigInteger, ForeignKey, select
+from sqlalchemy import BigInteger, ForeignKey, String, select
 from sqlalchemy.ext.asyncio import AsyncAttrs, AsyncSession
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -48,13 +48,13 @@ class Member(Base):
 class Ticket(Base):
     __tablename__ = "tickets"
 
-    id: Mapped[BigInt] = mapped_column(primary_key=True, autoincrement=False)
+    id: Mapped[str] = mapped_column(String(5), primary_key=True)
     members: Mapped[list[Member]] = relationship(
         "Member", back_populates="ticket", lazy="selectin"
     )
 
     @classmethod
-    async def get_by_id(cls, id: int, *, session: AsyncSession) -> Self | None:
+    async def get_by_id(cls, id: str, *, session: AsyncSession) -> Self | None:
         stmt = select(cls).filter(cls.id == id)
         result = await session.execute(stmt)
         return result.scalar_one_or_none()

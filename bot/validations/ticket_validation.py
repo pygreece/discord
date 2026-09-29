@@ -37,7 +37,7 @@ async def can_claim_ticket(member: discord.Member | discord.User, ticket_id: str
         if db_member.ticket:
             raise exceptions.TicketAlreadyClaimedException("Member has already claimed a ticket.")
 
-        db_ticket = await Ticket.get_by_id(int(ticket_id), session=session)
+        db_ticket = await Ticket.get_by_id(ticket_id, session=session)
         if not db_ticket:
             raise exceptions.TicketNotFoundInDatabaseException("Ticket not found in the database.")
     return True
