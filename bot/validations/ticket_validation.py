@@ -21,8 +21,8 @@ async def can_claim_ticket(member: discord.Member | discord.User, ticket_id: str
     if not isinstance(member, discord.Member):
         raise exceptions.UserNotMemberException("User was not a member.")
 
-    if not ticket_id or not ticket_id.isdigit() or len(ticket_id) != 10:
-        raise exceptions.InvalidTicketIdException("Ticket ID must be a 10-digit number.")
+    if not ticket_id or len(ticket_id) != 5:
+        raise exceptions.InvalidTicketIdException("Ticket ID must be a 5-digit number.")
     if member_has_role(member, config.TICKET_HOLDER_ROLE_NAME):
         raise exceptions.TicketHolderRoleAlreadyAssignedException(
             "Member already has the ticket holder role."

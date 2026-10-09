@@ -11,7 +11,7 @@ from bot.roles import assign_role
 logger = logging.getLogger(__name__)
 
 
-async def claim_ticket(member: discord.Member, ticket_id: int) -> bool:
+async def claim_ticket(member: discord.Member, ticket_id: str) -> bool:
     """
     Claims a ticket for a member.
 

@@ -56,7 +56,7 @@ TICKET_INVALID_CHANNEL_MESSAGE = (
 TICKET_INVALID_ID_MESSAGE = (
     "Λάθος αριθμός παραγγελίας, παρακαλώ ξαναπροσπάθησε.\n\n"
     "---\n\n"
-    "Invalid order ID, please try again. "
+    "Invalid order code, please try again. "
 )
 
 TICKET_MEMBER_ALREADY_CLAIMED_MESSAGE = (
