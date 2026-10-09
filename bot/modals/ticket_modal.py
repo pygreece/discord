@@ -120,7 +120,7 @@ class TicketModal(ui.Modal, title="Verify your Ticket"):
         assert isinstance(interaction.user, discord.Member), "User was not a member."
 
         try:
-            member_claimed_ticket = await claim_ticket(interaction.user, int(ticket_id))
+            member_claimed_ticket = await claim_ticket(interaction.user, ticket_id)
         except exceptions.RoleAssignmentFailedException:
             self.success = False
             await interaction.channel.add_user(random_organizer)
