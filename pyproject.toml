@@ -1,6 +1,6 @@
 [project]
 name = "pygreece-discord"
-version = "0.1.0"
+version = "0.4.1"
 description = "A Discord bot for the PyGreece online community"
 readme = "README.md"
 requires-python = ">=3.12"

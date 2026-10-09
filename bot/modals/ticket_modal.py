@@ -13,12 +13,12 @@ logger = logging.getLogger(__name__)
 
 class TicketModal(ui.Modal, title="Verify your Ticket"):
     input_ticket_id = ui.TextInput(
-        label="Order ID",
+        label="Order Code",
         style=TextStyle.short,
-        placeholder="Enter your order ID",
+        placeholder="Enter your order code",
         required=True,
-        min_length=10,
-        max_length=10,
+        min_length=5,
+        max_length=5,
         custom_id="ticket_id",
     )
     success = False
