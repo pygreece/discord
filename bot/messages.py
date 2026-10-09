@@ -25,25 +25,25 @@ ALREADY_EXISTS_MESSAGE = (
 
 ### Ticket messages
 NEW_MEMBER_TICKET_MESSAGE = (
-    "Είσαι επίσημα μέλος {name}! Μήπως έχεις και εισιτήριο για το PyCon Greece 2025; Πάτησε το παρακάτω κουμπί "
+    "Είσαι επίσημα μέλος {name}! Μήπως έχεις και εισιτήριο για το PyCon Greece 2026; Πάτησε το παρακάτω κουμπί "
     "και συμπλήρωσε τον αριθμό παραγγελίας σου (μπορείς να βρεις τον αριθμό παραγγελίας στο email που πήρες "
-    "όταν αγόρασες το εισιτήριο - ψάξε PyCon Greece 2025 στο inbox σου) "
+    "όταν αγόρασες το εισιτήριο - ψάξε PyCon Greece 2026 στο inbox σου) "
     "για να αποκτήσεις πρόσβαση στα κανάλια της εκδήλωσης! 😊\n\n"
     "---\n\n"
-    "You are officialy a member {name}! Do you also happen to have a ticket for PyCon Greece 2025? Click the button below "
+    "You are officialy a member {name}! Do you also happen to have a ticket for PyCon Greece 2026? Click the button below "
     "and enter your order number (you can find the order number in the email you received when you bought your ticket - "
-    "search for PyCon Greece 2025 in your inbox) to get access to the channels of the event! 😊 "
+    "search for PyCon Greece 2026 in your inbox) to get access to the channels of the event! 😊 "
 )
 
 ASK_FOR_TICKET_MESSAGE = (
-    "Γειά σου {name}, έχεις εισιτήριο για το PyCon Greece 2025; Πάτησε το παρακάτω κουμπί "
+    "Γειά σου {name}, έχεις εισιτήριο για το PyCon Greece 2026; Πάτησε το παρακάτω κουμπί "
     "και συμπλήρωσε τον αριθμό παραγγελίας σου (μπορείς να βρεις τον αριθμό παραγγελίας στο email που πήρες "
-    "όταν αγόρασες το εισιτήριο - ψάξε PyCon Greece 2025 στο inbox σου) "
+    "όταν αγόρασες το εισιτήριο - ψάξε PyCon Greece 2026 στο inbox σου) "
     "για να αποκτήσεις πρόσβαση στα κανάλια της εκδήλωσης! 😊\n\n"
     "---\n\n"
-    "Hey {name}, do you happen to have a ticket for PyCon Greece 2025? Click the button below "
+    "Hey {name}, do you happen to have a ticket for PyCon Greece 2026? Click the button below "
     "and enter your order number (you can find the order number in the email you received when you bought your ticket - "
-    "search for PyCon Greece 2025 in your inbox) to get access to the channels of the event! 😊 "
+    "search for PyCon Greece 2026 in your inbox) to get access to the channels of the event! 😊 "
 )
 
 ### Ticket Errors
